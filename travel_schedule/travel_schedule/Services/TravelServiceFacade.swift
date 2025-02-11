@@ -15,6 +15,7 @@ class TravelServiceFacade {
     private let nearestStationsService: NearestStationsServiceProtocol
     private let scheduleBetweenStationsService: ScheduleBetweenStationsServiceProtocol
     private let scheduleOnStationService: ScheduleOnStationServiceProtocol
+    private let stationsListService: StationsListServiceProtocol
     private let treadStationsService: TreadStationsServiceProtocol
 
     private init(client: Client, apikey: String) {
@@ -24,6 +25,7 @@ class TravelServiceFacade {
         self.nearestStationsService = NearestStationsService(client: client, apikey: apikey)
         self.scheduleBetweenStationsService = ScheduleBetweenStationsService(client: client, apikey: apikey)
         self.scheduleOnStationService = ScheduleOnStationService(client: client, apikey: apikey)
+        self.stationsListService = StationsListService(client: client, apikey: apikey)
         self.treadStationsService = TreadStationsService(client: client, apikey: apikey)
     }
     
@@ -58,6 +60,10 @@ class TravelServiceFacade {
     
     func getScheduleOnStation(station: String, transportTypes: String, date: String) async throws -> Schedule {
         return try await scheduleOnStationService.getScheduleOnStation(station: station, transportTypes: transportTypes, date: date)
+    }
+    
+    func getStationList() async throws -> StationsList {
+        return try await stationsListService.getStationsList()
     }
     
     func getThreadStation(uid: String) async throws -> Thread {
