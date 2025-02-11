@@ -10,26 +10,13 @@ import OpenAPIURLSession
 
 // View
 struct MainScreen: View {
-    @StateObject private var viewModel = MainScreenModel()
-
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text(viewModel.stationsResult)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .center)
+        VStack {
             
-            Button(action: {
-                viewModel.fetchStations()
-            }) {
-                Text("Получить резултат")
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
         }
-        .padding()
     }
+    
 }
 
 // Превью

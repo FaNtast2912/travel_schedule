@@ -8,26 +8,83 @@ import Foundation
 import OpenAPIURLSession
 
 class MainScreenModel: ObservableObject {
-    @Published var stationsResult: String = "Нажмите кнопку для получения данных"
-
+    
+    private let service = TravelServiceFacade.shared
+    
+    
     @MainActor
-    func fetchStations() {
-        let client = Client(
-            serverURL: try! Servers.Server1.url(),
-            transport: URLSessionTransport()
-        )
-        
-        let service = NearestSettlementService(
-            client: client,
-            apikey: "7e385f73-a617-47a7-9f00-9c84898bf886"
-        )
-
+    func fetchCarier() {
         Task {
             do {
-                let stations = try await service.getNearestSettlement(lat: 59.864177, lng: 30.319163, distance: 50)
-                self.stationsResult = "Станции: \(stations)"
+                let carier = try await service.getCarrier(code: "S7")
             } catch {
-                self.stationsResult = "Ошибка: \(error.localizedDescription)"
+                print("Ошибка: \(error.localizedDescription) in fetchCarier")
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchCopyright() {
+        Task {
+            do {
+                let copyright = try await service.getCopyright()
+            } catch {
+                print("Ошибка: \(error.localizedDescription) in fetchCopyright")
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchNearestSettlement() {
+        Task {
+            do {
+                let nearestSettlement = try await service.getNearestSettlement(lat: 59.864177, lng: 30.319163, distance: 50)
+            } catch {
+                print("Ошибка: \(error.localizedDescription) in fetchNearestSettlement")
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchNearestStations() {
+        Task {
+            do {
+                let stations = try await service.getNearestStations(lat: 59.864177, lng: 30.319163, distance: 50)
+            } catch {
+                print("Ошибка: \(error.localizedDescription) in fetchNearestStations")
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchScheduleBetweenStations() {
+        Task {
+            do {
+                let schedule = try await service.getScheduleBetweenStations(from: "MOW", to: "LED", transportTypes: "", date: "")
+            } catch {
+                print("Ошибка: \(error.localizedDescription) in fetchScheduleBetweenStations")
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchScheduleOnStation() {
+        Task {
+            do {
+                let schedule = try await service.getScheduleOnStation(station: "MOW", transportTypes: "", date: "")
+            } catch {
+                print("Ошибка: \(error.localizedDescription) in fetchScheduleOnStation")
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchTreadStations() {
+        Task {
+            do {
+                let stations = try await service.getThreadStation(uid: "1234567890")
+            } catch {
+                print("Ошибка: \(error.localizedDescription) in fetchTreadStations")
             }
         }
     }
