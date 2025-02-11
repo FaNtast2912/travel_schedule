@@ -112,7 +112,7 @@ paths:
   /v3.0/stations_list/:
     get:
       tags:
-        - stationList
+        - getStationsList
       summary: Список всех станций
       operationId: getStationsList
       parameters:
@@ -132,7 +132,7 @@ paths:
   /v3.0/carrier/:
     get:
       tags:
-        - carrier
+        - getCarrier
       summary: Информация о перевозчике
       operationId: getCarrier
       parameters:
@@ -158,7 +158,7 @@ paths:
   /v3.0/thread/:
     get:
       tags:
-        - thread
+        - getThreadStations
       summary: Список станций на маршруте
       operationId: getThreadStations
       parameters:
@@ -184,7 +184,7 @@ paths:
   /v3.0/schedule/:
     get:
       tags:
-        - schedule
+        - getScheduleOnStation
       summary: Расписание на станции
       operationId: getScheduleOnStation
       parameters:
@@ -223,7 +223,7 @@ paths:
   /v3.0/search/:
     get:
       tags:
-        - search
+        - getScheduleBetweenStations
       summary: Расписание между станциями
       operationId: getScheduleBetweenStations
       parameters:
@@ -268,7 +268,7 @@ paths:
   /v3.0/copyright/:
     get:
       tags:
-        - copyright
+        - getCopyright
       summary: Информация о копирайте
       operationId: getCopyright
       parameters:
@@ -285,7 +285,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Copyright'
-
 components:
   schemas:
     Stations:

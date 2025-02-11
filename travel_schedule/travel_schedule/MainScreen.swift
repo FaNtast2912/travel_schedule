@@ -35,6 +35,6 @@ struct MainScreen: View {
 // Превью
 struct StationsView_Previews: PreviewProvider {
     static var previews: some View {
-        StationsView()
+        MainScreen()
     }
 }
