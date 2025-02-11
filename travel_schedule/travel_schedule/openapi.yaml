@@ -1,0 +1,560 @@
+openapi: 3.0.3
+info:
+  title: API.Rasp.Yandex.Net
+  description: API Яндекс.Расписаний
+  version: 3.0.0
+servers:
+- url: https://api.rasp.yandex.net
+tags:
+- name: Запросы к API
+  description: Список запросов в сервисе
+paths:
+  /v3.0/nearest_stations/:
+    get:
+      tags:
+      - getNearestStations
+      summary: Список ближайших станций
+      operationId: getNearestStations
+      parameters:
+      - name: apikey
+        in: query
+        description: API key
+        required: true
+        schema:
+          type: string
+      - name: lat
+        in: query
+        description: широта
+        required: true
+        schema:
+          type: number
+      - name: lng
+        in: query
+        description: долгота
+        required: true
+        schema:
+          type: number
+      - name: distance
+        in: query
+        description: радиус охвата
+        required: true
+        schema:
+          type: integer
+      - name: format
+        in: query
+        description: json или xml
+        required: false
+        schema:
+          type: string
+      - name: lang
+        in: query
+        description: lang
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stations'
+  /v3.0/nearest_settlement/:
+    get:
+      tags:
+      - getNearestSettlement
+      summary: Список ближайших городов
+      operationId: getNearestSettlement
+      parameters:
+      - name: apikey
+        in: query
+        description: API key
+        required: true
+        schema:
+          type: string
+      - name: lat
+        in: query
+        description: широта
+        required: true
+        schema:
+          type: number
+      - name: lng
+        in: query
+        description: долгота
+        required: true
+        schema:
+          type: number
+      - name: distance
+        in: query
+        description: радиус охвата
+        required: true
+        schema:
+          type: integer
+      - name: format
+        in: query
+        description: json или xml
+        required: false
+        schema:
+          type: string
+      - name: lang
+        in: query
+        description: lang
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settlement'
+  /v3.0/stations_list/:
+    get:
+      tags:
+        - stationList
+      summary: Список всех станций
+      operationId: getStationsList
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationsList'
+  /v3.0/carrier/:
+    get:
+      tags:
+        - carrier
+      summary: Информация о перевозчике
+      operationId: getCarrier
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: code
+          in: query
+          description: Carrier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carrier'
+  /v3.0/thread/:
+    get:
+      tags:
+        - thread
+      summary: Список станций на маршруте
+      operationId: getThreadStations
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: query
+          description: Идентификатор маршрута (треда)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+  /v3.0/schedule/:
+    get:
+      tags:
+        - schedule
+      summary: Расписание на станции
+      operationId: getScheduleOnStation
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: station
+          in: query
+          description: Код станции
+          required: true
+          schema:
+            type: string
+        - name: transport_types
+          in: query
+          description: Типы транспорта (через запятую)
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: Дата в формате YYYY-MM-DD
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+  /v3.0/search/:
+    get:
+      tags:
+        - search
+      summary: Расписание между станциями
+      operationId: getScheduleBetweenStations
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: Код станции отправления
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: query
+          description: Код станции назначения
+          required: true
+          schema:
+            type: string
+        - name: transport_types
+          in: query
+          description: Типы транспорта (через запятую)
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: Дата в формате YYYY-MM-DD
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Search'
+  /v3.0/copyright/:
+    get:
+      tags:
+        - copyright
+      summary: Информация о копирайте
+      operationId: getCopyright
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Copyright'
+
+components:
+  schemas:
+    Stations:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+    Station:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        short_title:
+          type: string
+        popular_title:
+          type: string
+        code:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        station_type:
+          type: string
+        station_type_name:
+          type: string
+        transport_type:
+          type: string
+        distance:
+          type: number
+        majority:
+          type: integer
+        type_choices:
+          $ref: '#/components/schemas/Schedule'
+    Schedule:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleItem'
+    Settlement:
+      type: object
+      properties:
+        distance:
+          type: number
+        code:
+          type: string
+        title:
+          type: string
+        popular_title:
+          type: string
+        short_title:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+    StationsList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stations'
+    Carrier:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Код перевозчика
+        name:
+          type: string
+          description: Название перевозчика
+        transport_types:
+          type: array
+          items:
+            type: string
+          description: Типы транспорта, которые использует перевозчик
+        icon:
+          type: string
+          description: URL иконки перевозчика
+        url:
+          type: string
+          description: URL официального сайта перевозчика
+    Thread:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+
+    Search:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchItem'
+    ScheduleItem:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: Уникальный идентификатор маршрута
+        date:
+          type: string
+          format: date-time
+          description: Время отправления
+        arrival:
+          type: string
+          format: date-time
+          description: Время прибытия (если применимо)
+        departure:
+          type: string
+          format: date-time
+          description: Время отправления
+        transport:
+          type: object
+          properties:
+            type:
+              type: string
+              description: Тип транспорта
+            carrier:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Код перевозчика
+                name:
+                  type: string
+                  description: Название перевозчика
+                icon:
+                  type: string
+                  description: URL иконки перевозчика
+                url:
+                  type: string
+                  description: URL официального сайта перевозчика
+          description: Информация о транспорте
+        platform:
+          type: string
+          description: Платформа отправления
+        carriage:
+          type: string
+          description: Вагон
+        carriages:
+          type: integer
+          description: Количество вагонов
+        ticket:
+          type: object
+          properties:
+            web:
+              type: boolean
+              description: Доступность покупки билета онлайн
+            phone:
+              type: boolean
+              description: Доступность покупки билета по телефону
+            sms:
+              type: boolean
+              description: Доступность покупки билета через SMS
+            qr:
+              type: boolean
+              description: Доступность покупки билета через QR-код
+        status:
+          type: string
+          description: Статус поездки (например, "на подходе", "в пути", "прибыл")
+        message:
+          type: string
+          description: Сообщение о статусе поездки
+    SearchItem:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: Уникальный идентификатор маршрута
+        date:
+          type: string
+          format: date-time
+          description: Время отправления
+        arrival:
+          type: string
+          format: date-time
+          description: Время прибытия (если применимо)
+        departure:
+          type: string
+          format: date-time
+          description: Время отправления
+        transport:
+          type: object
+          properties:
+            type:
+              type: string
+              description: Тип транспорта
+            carrier:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Код перевозчика
+                name:
+                  type: string
+                  description: Название перевозчика
+                icon:
+                  type: string
+                  description: URL иконки перевозчика
+                url:
+                  type: string
+                  description: URL официального сайта перевозчика
+          description: Информация о транспорте
+        platform:
+          type: string
+          description: Платформа отправления
+        carriage:
+          type: string
+          description: Вагон
+        carriages:
+          type: integer
+          description: Количество вагонов
+        ticket:
+          type: object
+          properties:
+            web:
+              type: boolean
+              description: Доступность покупки билета онлайн
+            phone:
+              type: boolean
+              description: Доступность покупки билета по телефону
+            sms:
+              type: boolean
+              description: Доступность покупки билета через SMS
+            qr:
+              type: boolean
+              description: Доступность покупки билета через QR-код
+        status:
+          type: string
+          description: Статус поездки (например, "на подходе", "в пути", "прибыл")
+        message:
+          type: string
+          description: Сообщение о статусе поездки
+    Copyright:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Текст с информацией о копирайте
+        url:
+          type: string
+          description: URL, где можно найти больше информации о копирайте
