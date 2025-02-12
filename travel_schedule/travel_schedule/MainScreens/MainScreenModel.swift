@@ -25,14 +25,14 @@ final class MainScreenModel: ObservableObject {
         let errorCollector = ErrorCollector()
         
         let methods: [() async throws -> Void] = [
-            fetchCarier,
+            fetchCarrier,
             fetchCopyright,
             fetchNearestSettlement,
             fetchNearestStations,
             fetchScheduleBetweenStations,
             fetchScheduleOnStation,
             fetchStationList,
-            fetchTreadStations
+            fetchThreadStations
         ]
         
         await withTaskGroup(of: Void.self) { group in
@@ -42,12 +42,9 @@ final class MainScreenModel: ObservableObject {
                         try await method()
                     } catch {
                         await errorCollector.addError(error)
-                        print("Ошибка в методе: \(error.localizedDescription)")
                     }
                 }
             }
-            
-            await group.waitForAll()
         }
         
         let errors = await errorCollector.getAllErrors()
@@ -55,99 +52,39 @@ final class MainScreenModel: ObservableObject {
         await MainActor.run {
             isLoading = false
             isSuccess = errors.isEmpty
-            errorMessage = errors.isEmpty ? nil : errors.map { $0.localizedDescription }.joined(separator: "\n")
-            print("Количество ошибок: \(errors.count)")
-            if !errors.isEmpty {
-                print("Ошибки: \(errors)")
-            }
+            errorMessage = errors.isEmpty ? nil : "Произошло \(errors.count) ошибок"
         }
     }
     
-    @MainActor
-    func fetchCarier() async throws {
-        Task {
-            do {
-                let carier = try await service.getCarrier(code: "680")
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchCarier")
-            }
-        }
+    func fetchCarrier() async throws {
+        _ = try await service.getCarrier(code: "680")
     }
     
-    @MainActor
     func fetchCopyright() async throws {
-        Task {
-            do {
-                let copyright = try await service.getCopyright()
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchCopyright")
-            }
-        }
+        _ = try await service.getCopyright()
     }
     
-    @MainActor
     func fetchNearestSettlement() async throws {
-        Task {
-            do {
-                let nearestSettlement = try await service.getNearestSettlement(lat: 59.864177, lng: 30.319163, distance: 50)
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchNearestSettlement")
-            }
-        }
+        _ = try await service.getNearestSettlement(lat: 59.864177, lng: 30.319163, distance: 50)
     }
     
-    @MainActor
     func fetchNearestStations() async throws {
-        Task {
-            do {
-                let stations = try await service.getNearestStations(lat: 59.864177, lng: 30.319163, distance: 50)
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchNearestStations")
-            }
-        }
+        _ = try await service.getNearestStations(lat: 59.864177, lng: 30.319163, distance: 50)
     }
     
-    @MainActor
     func fetchScheduleBetweenStations() async throws {
-        Task {
-            do {
-                let schedule = try await service.getScheduleBetweenStations(from: "s9600213", to: "c146", transportTypes: "train", date: "2025-04-10")
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchScheduleBetweenStations")
-            }
-        }
+        _ = try await service.getScheduleBetweenStations(from: "s9600213", to: "c146", transportTypes: "train", date: "2025-04-10")
     }
     
-    @MainActor
     func fetchScheduleOnStation() async throws {
-        Task {
-            do {
-                let schedule = try await service.getScheduleOnStation(station: "s9600213", transportTypes: "train", date: "2025-04-10")
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchScheduleOnStation")
-            }
-        }
+        _ = try await service.getScheduleOnStation(station: "s9600213", transportTypes: "train", date: "2025-04-10")
     }
     
-    @MainActor
     func fetchStationList() async throws {
-        Task {
-            do {
-                let stations = try await service.getStationsList()
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchStationList")
-            }
-        }
+        _ = try await service.getStationsList()
     }
     
-    @MainActor
-    func fetchTreadStations() async throws {
-        Task {
-            do {
-                let stations = try await service.getThreadStation(uid: "068S_2_2")
-            } catch {
-                print("Ошибка: \(error.localizedDescription) in fetchTreadStations")
-            }
-        }
+    func fetchThreadStations() async throws {
+        _ = try await service.getThreadStation(uid: "068S_2_2")
     }
 }
