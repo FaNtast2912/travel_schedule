@@ -43,6 +43,7 @@ class MainScreenModel: ObservableObject {
             fetchNearestStations,
             fetchScheduleBetweenStations,
             fetchScheduleOnStation,
+            fetchStationList,
             fetchTreadStations
         ]
         
@@ -136,6 +137,17 @@ class MainScreenModel: ObservableObject {
                 let schedule = try await service.getScheduleOnStation(station: "s9600213", transportTypes: "train", date: "2025-04-10")
             } catch {
                 print("Ошибка: \(error.localizedDescription) in fetchScheduleOnStation")
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchStationList() async throws {
+        Task {
+            do {
+                let stations = try await service.getStationsList()
+            } catch {
+                print("Ошибка: \(error.localizedDescription) in fetchStationList")
             }
         }
     }

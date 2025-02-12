@@ -28,8 +28,8 @@ final class ScheduleBetweenStationsService: ScheduleBetweenStationsServiceProtoc
                 apikey: apikey,
                 from: startStation,
                 to: endStation,
-                transport_types: transportTypes,
-                date: date
+                date: date,
+                transport_types: transportTypes
             )
         )
         return try response.ok.body.json

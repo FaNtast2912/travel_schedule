@@ -25,8 +25,8 @@ final class ScheduleOnStationService: ScheduleOnStationServiceProtocol {
             query: .init(
                 apikey: apikey,
                 station: station,
-                transport_types: transportTypes,
-                date: date
+                date: date,
+                transport_types: transportTypes
             )
         )
         return try response.ok.body.json

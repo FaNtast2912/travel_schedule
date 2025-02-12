@@ -62,7 +62,7 @@ class TravelServiceFacade {
         return try await scheduleOnStationService.getScheduleOnStation(station: station, transportTypes: transportTypes, date: date)
     }
     
-    func getStationList() async throws -> StationsList {
+    func getStationsList() async throws -> StationsList {
         return try await stationsListService.getStationsList()
     }
     
