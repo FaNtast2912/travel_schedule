@@ -6,7 +6,7 @@
 //
 import OpenAPIURLSession
 
-class TravelServiceFacade {
+final class TravelServiceFacade {
     static let shared = TravelServiceFacade()
     
     private let carrierService: CarrierServiceProtocol

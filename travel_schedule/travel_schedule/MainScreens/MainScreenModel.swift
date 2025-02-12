@@ -7,7 +7,7 @@
 import Foundation
 import OpenAPIURLSession
 
-class MainScreenModel: ObservableObject {
+final class MainScreenModel: ObservableObject {
     
     private let service = TravelServiceFacade.shared
     
