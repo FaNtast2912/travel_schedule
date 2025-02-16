@@ -13,7 +13,9 @@ struct SplashScreenView: View {
     var body: some View {
         Group {
             if isActive {
-                MainScreen()
+                RouterView {
+                    ContentView()
+                }
             } else {
                 SplashView()
             }
