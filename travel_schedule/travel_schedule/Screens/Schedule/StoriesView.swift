@@ -10,12 +10,12 @@ import SwiftUI
 struct StoriesView: View {
     @EnvironmentObject private var router: Router
     
-    let stories: [Story] = [
-        Story(imageName: "1", title: "Машинист и его машина едут в саратов"),
-        Story(imageName: "2", title: "Инженер"),
-        Story(imageName: "3", title: "Проводница"),
-        Story(imageName: "4", title: "Еще проводница"),
-        Story(imageName: "5", title: "Электричка")
+    let stories: [StoryModel] = [
+        StoryModel(imageName: "1", title: "Машинист и его машина едут в саратов"),
+        StoryModel(imageName: "2", title: "Инженер"),
+        StoryModel(imageName: "3", title: "Проводница"),
+        StoryModel(imageName: "4", title: "Еще проводница"),
+        StoryModel(imageName: "5", title: "Электричка")
     ]
     
     // Размеры для адаптации
@@ -40,7 +40,7 @@ struct StoriesView: View {
         }
     }
     
-    private func storyButton(story: Story) -> some View {
+    private func storyButton(story: StoryModel) -> some View {
         Button(action: {
             handleStoryTap(story: story)
         }) {
@@ -49,7 +49,7 @@ struct StoriesView: View {
         .buttonStyle(ScaleButtonStyle())
     }
     
-    private func handleStoryTap(story: Story) {
+    private func handleStoryTap(story: StoryModel) {
         router.push(.showStory(story: story))
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StoryDetailView: View {
     
-    var story: Story
+    var story: StoryModel
     
     var body: some View {
         Text("картинка номер \(story.imageName)")
@@ -17,5 +17,5 @@ struct StoryDetailView: View {
 }
 
 #Preview {
-    StoryDetailView(story: Story(imageName: "1", title: "Машинист"))
+    StoryDetailView(story: StoryModel(imageName: "1", title: "Машинист"))
 }

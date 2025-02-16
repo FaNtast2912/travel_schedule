@@ -1,25 +1,22 @@
 //
-//  ContentView.swift
-//  Navigation SwiftUI
+//  ScheduleView.swift
+//  travel_schedule
 //
 //  Created by Maksim Zakharov on 16.02.2025.
 //
 
 import SwiftUI
 
-struct ContentView: View {
+struct ScheduleView: View {
     @EnvironmentObject private var router: Router
+    
     var body: some View {
         VStack {
             Text("Root view")
-            Button(action: {
-                router.push(.firstView)
-            }) {
+            Button(action: { router.push(.firstView) }) {
                 Text("Go to first view")
             }
-            Button(action: {
-                router.push(.storiesView)
-            }) {
+            Button(action: { router.push(.storiesView) }) {
                 Text("Go to Scroll view")
             }
         }
@@ -27,7 +24,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    RouterView {
-        ContentView()
-    }
+    ScheduleView()
 }

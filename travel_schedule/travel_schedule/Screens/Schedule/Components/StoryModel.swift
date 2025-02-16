@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct Story: Identifiable, Hashable {
+struct StoryModel: Identifiable, Hashable {
     let id = UUID()
     let imageName: String
     let title: String

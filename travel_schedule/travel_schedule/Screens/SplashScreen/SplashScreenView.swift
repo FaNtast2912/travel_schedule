@@ -14,7 +14,7 @@ struct SplashScreenView: View {
         Group {
             if isActive {
                 RouterView {
-                    ContentView()
+                    TabBarView()
                 }
             } else {
                 SplashView()

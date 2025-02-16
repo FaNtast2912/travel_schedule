@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StoryCardView: View {
-    let story: Story
+    let story: StoryModel
     private let storySize = CGSize(width: 92, height: 140)
     private let cornerRadius: CGFloat = 16
     
@@ -60,5 +60,5 @@ struct StoryCardView: View {
 }
 
 #Preview {
-    StoryCardView(story: Story(imageName: "1", title: "Машинист"))
+    StoryCardView(story: StoryModel(imageName: "1", title: "Машинист"))
 }

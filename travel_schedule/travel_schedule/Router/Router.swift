@@ -17,7 +17,7 @@ final class Router: ObservableObject {
         case secondView
         case thirdView
         case storiesView
-        case showStory(story: Story)
+        case showStory(story: StoryModel)
     }
     // MARK: - Public Methods
     @ViewBuilder
