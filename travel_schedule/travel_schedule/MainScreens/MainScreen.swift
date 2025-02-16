@@ -8,7 +8,6 @@
 import SwiftUI
 import OpenAPIURLSession
 
-// View
 struct MainScreen: View {
     @StateObject private var model = MainScreenModel()
     
@@ -44,12 +43,5 @@ struct MainScreen: View {
         }
         .padding()
         .animation(.default, value: model.isLoading)
-    }
-}
-
-// Превью
-struct StationsView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainScreen()
     }
 }
