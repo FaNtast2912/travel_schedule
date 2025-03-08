@@ -8,15 +8,24 @@
 import Foundation
 import Combine
 
-class MainScreenViewModel: ObservableObject {
+class ScheduleViewModel: ObservableObject {
 
     @Published var from: String = ""
     @Published var to: String = ""
     
-
+    @Published var isEditingFromField: Bool = true
+    
     func swapLocations() {
         let buffer = from
         from = to
         to = buffer
+    }
+    
+    func setSelectedCity(_ city: String) {
+        if isEditingFromField {
+            from = city
+        } else {
+            to = city
+        }
     }
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SecondView: View {
+    
     @EnvironmentObject private var router: Router
     
     var body: some View {

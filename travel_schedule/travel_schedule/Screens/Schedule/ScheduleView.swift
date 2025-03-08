@@ -9,7 +9,17 @@ import SwiftUI
 
 struct ScheduleView: View {
     
-    @ObservedObject var viewModel: MainScreenViewModel
+    @ObservedObject private var viewModel: ScheduleViewModel
+    @ObservedObject private var router: Router
+    
+    init() {
+        guard let vm = DIContainer.shared.resolve(ScheduleViewModel.self),
+              let r = DIContainer.shared.resolve(Router.self) else {
+            fatalError("Dependencies not registered")
+        }
+        self.viewModel = vm
+        self.router = r
+    }
     
     var body: some View {
         ZStack() {
@@ -26,6 +36,7 @@ struct ScheduleView: View {
             }
         }
     }
+    
     private var Background: some View {
         RoundedRectangle(cornerRadius: 20)
             .foregroundColor(Color(.ypBlue))
@@ -38,10 +49,22 @@ struct ScheduleView: View {
                 .padding(.trailing, 13)
                 .padding(.leading, 16)
                 .padding(.top, 14)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        viewModel.isEditingFromField = true
+                        router.push(.firstView)
+                    }
+                )
             TextField("to", text: $viewModel.to, prompt: Text("Куда"))
                 .padding(.trailing, 13)
                 .padding(.leading, 16)
                 .padding(.bottom, 14)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        viewModel.isEditingFromField = false
+                        router.push(.firstView)
+                    }
+                )
         }
         .frame(width: 259, height: 96)
         .background(Color.white)
@@ -61,6 +84,16 @@ struct ScheduleView: View {
     }
 }
 
-#Preview {
-    ScheduleView(viewModel: MainScreenViewModel())
+struct ScheduleView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Настраиваем предварительный просмотр
+        let viewModel = ScheduleViewModel()
+        let router = Router()
+        DIContainer.shared.register(viewModel, for: ScheduleViewModel.self)
+        DIContainer.shared.register(router, for: Router.self)
+        
+        return ScheduleView()
+            .previewLayout(.sizeThatFits)
+            .padding()
+    }
 }

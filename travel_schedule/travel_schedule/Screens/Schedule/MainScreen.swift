@@ -8,19 +8,20 @@
 import SwiftUI
 
 struct MainScreen: View {
-    
-    @StateObject private var viewModel = MainScreenViewModel()
-    @EnvironmentObject private var router: Router
-    
     var body: some View {
         VStack(spacing: 20.0) {
             StoriesView()
-            ScheduleView(viewModel: viewModel)
+            ScheduleView()
             Spacer()
         }
     }
 }
 
 #Preview {
-    MainScreen()
+    let viewModel = ScheduleViewModel()
+    let router = Router()
+    DIContainer.shared.register(viewModel, for: ScheduleViewModel.self)
+    DIContainer.shared.register(router, for: Router.self)
+    
+    return MainScreen()
 }

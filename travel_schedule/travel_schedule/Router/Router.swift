@@ -21,23 +21,6 @@ final class Router: ObservableObject {
         case showStory(story: StoryModel)
     }
     
-    // MARK: - Public Methods
-    @ViewBuilder
-    func view(for route: Route) -> some View {
-        switch route {
-        case .firstView:
-            FirstView()
-        case .secondView:
-            SecondView()
-        case .thirdView:
-            ThirdView()
-        case .storiesView:
-            StoriesView()
-        case let .showStory(story):
-            StoryDetailView(story: story)
-        }
-    }
-    
     @inlinable
     @inline(__always)
     func push(_ appRoute: Route) {

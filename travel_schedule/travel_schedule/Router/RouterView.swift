@@ -9,30 +9,35 @@ import SwiftUI
 
 struct RouterView<Content: View>: View {
     // MARK: - Private Properties
-    @ObservedObject private var router = Router()
+    @ObservedObject private var router: Router
+    @ObservedObject private var factory: ScreenFactory
     private let content: Content
     
     // MARK: - Initialisers
     @inlinable
     init(@ViewBuilder content: @escaping () -> Content) {
+        guard let r = DIContainer.shared.resolve(Router.self), let f = DIContainer.shared.resolve(ScreenFactory.self) else {
+            fatalError("Dependencies not registered")
+        }
         self.content = content()
+        self.router = r
+        self.factory = f
     }
     
     var body: some View {
         NavigationStack(path: $router.path) {
             content
                 .navigationDestination(for: Router.Route.self) {
-                    router.view(for: $0)
+                    factory.view(for: $0)
                 }
         }
-        .environmentObject(router)
     }
-    
 }
 
 #Preview {
     RouterView() {
         VStack{
+            Text("Preview")
         }
     }
 }
