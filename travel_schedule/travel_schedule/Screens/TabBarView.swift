@@ -17,7 +17,7 @@ struct TabBarView: View {
     var body: some View {
         TabView {
             // Вкладка с расписанием
-            ScheduleView()
+                MainScreen()
                 .tabItem {
                     Label("Главная", image: ButtonStyle.scheduleButton.rawValue)
                 }

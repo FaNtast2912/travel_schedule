@@ -12,6 +12,7 @@ import SwiftUI
 final class Router: ObservableObject {
     // MARK: - Public Properties
     @Published var path = NavigationPath()
+    
     enum Route: Hashable {
         case firstView
         case secondView
@@ -19,6 +20,7 @@ final class Router: ObservableObject {
         case storiesView
         case showStory(story: StoryModel)
     }
+    
     // MARK: - Public Methods
     @ViewBuilder
     func view(for route: Route) -> some View {

@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct travel_scheduleApp: App {
+    
     init() {
         customizeTabBarAppearance()
     }

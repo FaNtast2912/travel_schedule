@@ -26,9 +26,6 @@ struct StoriesView: View {
     var body: some View {
         
         VStack(alignment: .leading) {
-            Text("Истории")
-                .font(.headline)
-                .padding(.horizontal)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(stories) { story in
@@ -36,6 +33,7 @@ struct StoriesView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                .padding(.vertical, 24)
             }
         }
     }
