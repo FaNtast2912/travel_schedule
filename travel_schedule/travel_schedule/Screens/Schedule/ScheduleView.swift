@@ -86,11 +86,12 @@ struct ScheduleView: View {
 
 struct ScheduleView_Previews: PreviewProvider {
     static var previews: some View {
-        // Настраиваем предварительный просмотр
         let viewModel = ScheduleViewModel()
         let router = Router()
+        let factory = ScreenFactory()
         DIContainer.shared.register(viewModel, for: ScheduleViewModel.self)
         DIContainer.shared.register(router, for: Router.self)
+        DIContainer.shared.register(factory, for: ScreenFactory.self)
         
         return ScheduleView()
             .previewLayout(.sizeThatFits)

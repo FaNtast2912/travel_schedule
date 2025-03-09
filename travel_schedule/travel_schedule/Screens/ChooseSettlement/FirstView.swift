@@ -37,12 +37,13 @@ struct FirstView: View {
 }
 
 #Preview {
-    // Настраиваем предварительный просмотр
     let viewModel = ScheduleViewModel()
     let router = Router()
+    let factory = ScreenFactory()
     DIContainer.shared.register(viewModel, for: ScheduleViewModel.self)
     DIContainer.shared.register(router, for: Router.self)
+    DIContainer.shared.register(factory, for: ScreenFactory.self)
     
     return FirstView()
-        .environmentObject(Router())
+
 }

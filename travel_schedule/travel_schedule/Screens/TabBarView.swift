@@ -16,17 +16,14 @@ struct TabBarView: View {
     
     var body: some View {
         TabView {
-            // Вкладка с расписанием
             MainScreen()
                 .tabItem {
-                    Label("Главная", image: ButtonStyle.scheduleButton.rawValue)
+                    Label("", image: ButtonStyle.scheduleButton.rawValue)
                 }
-                
             
-            // Вкладка настроек
             SettingsView()
                 .tabItem {
-                    Label("Настройки", image: ButtonStyle.settingsButton.rawValue)
+                    Label("", image: ButtonStyle.settingsButton.rawValue)
                 }
         }
     }
@@ -35,8 +32,10 @@ struct TabBarView: View {
 #Preview {
     let viewModel = ScheduleViewModel()
     let router = Router()
+    let factory = ScreenFactory()
     DIContainer.shared.register(viewModel, for: ScheduleViewModel.self)
     DIContainer.shared.register(router, for: Router.self)
+    DIContainer.shared.register(factory, for: ScreenFactory.self)
     
     return RouterView {
         TabBarView()
