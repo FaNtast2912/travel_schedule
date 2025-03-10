@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StoriesView: View {
+struct StoriesListView: View {
     @EnvironmentObject private var router: Router
     
     let stories: [StoryModel] = [
@@ -61,5 +61,5 @@ struct ScaleButtonStyle: ButtonStyle {
 }
 
 #Preview {
-    StoriesView()
+    StoriesListView()
 }

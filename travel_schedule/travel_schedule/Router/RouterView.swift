@@ -16,7 +16,9 @@ struct RouterView<Content: View>: View {
     // MARK: - Initialisers
     @inlinable
     init(@ViewBuilder content: @escaping () -> Content) {
-        guard let r = DIContainer.shared.resolve(Router.self), let f = DIContainer.shared.resolve(ScreenFactory.self) else {
+        guard let r = DIContainer.shared.resolve(Router.self),
+              let f = DIContainer.shared.resolve(ScreenFactory.self)
+        else {
             fatalError("Dependencies not registered")
         }
         self.content = content()
@@ -30,14 +32,6 @@ struct RouterView<Content: View>: View {
                 .navigationDestination(for: Router.Route.self) {
                     factory.view(for: $0)
                 }
-        }
-    }
-}
-
-#Preview {
-    RouterView() {
-        VStack{
-            Text("Preview")
         }
     }
 }

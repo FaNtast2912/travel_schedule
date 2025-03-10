@@ -24,7 +24,6 @@ struct ScheduleView: View {
     var body: some View {
         ZStack() {
             Background
-            
             HStack(spacing: 16.0) {
                 Textfields
                 Button(action: {

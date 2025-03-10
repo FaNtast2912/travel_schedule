@@ -10,7 +10,7 @@ import SwiftUI
 struct MainScreen: View {
     var body: some View {
         VStack(spacing: 20.0) {
-            StoriesView()
+            StoriesListView()
             ScheduleView()
             Spacer()
         }

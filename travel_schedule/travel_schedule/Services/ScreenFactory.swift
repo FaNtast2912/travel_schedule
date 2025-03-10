@@ -19,7 +19,7 @@ final class ScreenFactory: ObservableObject {
         case .thirdView:
             ThirdView()
         case .storiesView:
-            StoriesView()
+            StoriesListView()
         case let .showStory(story):
             StoryDetailView(story: story)
         }
