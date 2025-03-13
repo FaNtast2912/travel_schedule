@@ -16,6 +16,9 @@ final class AppCoordinator {
     }
     
     func setupDependencies() {
+        let networkService = TravelServiceFacade()
+        container.register(networkService, for: TravelServiceFacade.self)
+        
         let scheduleViewModel = ScheduleViewModel()
         container.register(scheduleViewModel, for: ScheduleViewModel.self)
         

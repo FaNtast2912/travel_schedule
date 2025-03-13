@@ -18,12 +18,7 @@ struct MainScreen: View {
 }
 
 #Preview {
-    let viewModel = ScheduleViewModel()
-    let router = Router()
-    let factory = ScreenFactory()
-    DIContainer.shared.register(viewModel, for: ScheduleViewModel.self)
-    DIContainer.shared.register(router, for: Router.self)
-    DIContainer.shared.register(factory, for: ScreenFactory.self)
-    
+    let coordinator = AppCoordinator()
+    coordinator.setupDependencies()
     return MainScreen()
 }

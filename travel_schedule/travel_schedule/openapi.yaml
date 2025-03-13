@@ -503,6 +503,8 @@ components:
         station_type_name:
           type: string
         transport_type:
+         type: string
+        direction:
           type: string
         distance:
           type: number
@@ -538,6 +540,12 @@ components:
           type: number
         lng:
           type: number
+        codes:
+          $ref: '#/components/schemas/Codes'
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
 
     Carrier:
       type: object
