@@ -12,7 +12,7 @@ final class ScreenFactory: ObservableObject {
     func view(for route: Router.Route) -> some View {
         switch route {
         case .firstView:
-            SelectSityView()
+            SelectCityView()
         case .secondView:
             SecondView()
         case .thirdView:

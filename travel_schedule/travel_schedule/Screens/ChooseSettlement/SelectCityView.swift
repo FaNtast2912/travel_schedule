@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectSityView: View {
+struct SelectCityView: View {
     // MARK: - States
     @ObservedObject private var viewModel: ScheduleViewModel
     @ObservedObject private var router: Router
@@ -39,8 +39,9 @@ struct SelectSityView: View {
                 viewModel.setSelectedCity(city)
                 router.pop()
             }) {
-                Text(city.title ?? "")
+                CityCellView(cityName: city.title ?? "")
             }
+            .buttonStyle(PlainButtonStyle())
         }
         .navigationTitle("Выберите город")
     }
@@ -51,5 +52,5 @@ struct SelectSityView: View {
     let coordinator = AppCoordinator()
     coordinator.setupDependencies()
     
-    return SelectSityView()
+    return SelectCityView()
 }
