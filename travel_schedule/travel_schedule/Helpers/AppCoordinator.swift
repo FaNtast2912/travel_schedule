@@ -16,17 +16,19 @@ final class AppCoordinator {
     }
     
     func setupDependencies() {
+        
+        let screenFactory = ScreenFactory()
+        container.register(screenFactory, for: ScreenFactory.self)
+        
+        let router = Router()
+        container.register(router, for: Router.self)
+        
         let networkService = TravelServiceFacade()
         container.register(networkService, for: TravelServiceFacade.self)
         
         let scheduleViewModel = ScheduleViewModel()
         container.register(scheduleViewModel, for: ScheduleViewModel.self)
         
-        let router = Router()
-        container.register(router, for: Router.self)
-        
-        let screenFactory = ScreenFactory()
-        container.register(screenFactory, for: ScreenFactory.self)
     }
 
     func start() -> some View {

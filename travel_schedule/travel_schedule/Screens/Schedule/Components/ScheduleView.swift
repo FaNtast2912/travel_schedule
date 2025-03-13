@@ -35,7 +35,7 @@ struct ScheduleView: View {
             }
         }
         .onAppear {
-            viewModel.fetchStationList()
+            //            viewModel.fetchStationList()
         }
     }
     
@@ -51,21 +51,29 @@ struct ScheduleView: View {
                 .padding(.trailing, 13)
                 .padding(.leading, 16)
                 .padding(.top, 14)
-                .simultaneousGesture(
-                    TapGesture().onEnded {
-                        viewModel.isEditingFromField = true
-                        router.push(.firstView)
-                    }
+                .disabled(true)
+                .overlay(
+                    Rectangle()
+                        .fill(Color.clear)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            viewModel.isEditingFromField = true
+                            router.push(.firstView)
+                        }
                 )
             TextField("to", text: $viewModel.to, prompt: Text("Куда"))
                 .padding(.trailing, 13)
                 .padding(.leading, 16)
                 .padding(.bottom, 14)
-                .simultaneousGesture(
-                    TapGesture().onEnded {
-                        viewModel.isEditingFromField = false
-                        router.push(.firstView)
-                    }
+                .disabled(true) // Отключает редактирование
+                .overlay(
+                    Rectangle()
+                        .fill(Color.clear)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            viewModel.isEditingFromField = false
+                            router.push(.firstView)
+                        }
                 )
         }
         .frame(width: 259, height: 96)
@@ -91,8 +99,15 @@ struct ScheduleView_Previews: PreviewProvider {
         let coordinator = AppCoordinator()
         coordinator.setupDependencies()
         
+        return coordinator.start()
+    }
+}
+
+struct ScheduleViewPreviewOnly_Previews: PreviewProvider {
+    static var previews: some View {
+        let coordinator = AppCoordinator()
+        coordinator.setupDependencies()
+        
         return ScheduleView()
-            .previewLayout(.sizeThatFits)
-            .padding()
     }
 }

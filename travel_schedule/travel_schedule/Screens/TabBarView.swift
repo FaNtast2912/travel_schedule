@@ -29,15 +29,11 @@ struct TabBarView: View {
     }
 }
 
-#Preview {
-    let viewModel = ScheduleViewModel()
-    let router = Router()
-    let factory = ScreenFactory()
-    DIContainer.shared.register(viewModel, for: ScheduleViewModel.self)
-    DIContainer.shared.register(router, for: Router.self)
-    DIContainer.shared.register(factory, for: ScreenFactory.self)
-    
-    return RouterView {
-        TabBarView()
+struct TabBarView_Previews: PreviewProvider {
+    static var previews: some View {
+        let coordinator = AppCoordinator()
+        coordinator.setupDependencies()
+        
+        return coordinator.start()
     }
 }

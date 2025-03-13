@@ -17,8 +17,20 @@ struct MainScreen: View {
     }
 }
 
-#Preview {
-    let coordinator = AppCoordinator()
-    coordinator.setupDependencies()
-    return MainScreen()
+struct MainScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        let coordinator = AppCoordinator()
+        coordinator.setupDependencies()
+        
+        return coordinator.start()
+    }
+}
+
+struct MainScreenPreviewOnly_Previews: PreviewProvider {
+    static var previews: some View {
+        let coordinator = AppCoordinator()
+        coordinator.setupDependencies()
+        
+        return MainScreen()
+    }
 }
