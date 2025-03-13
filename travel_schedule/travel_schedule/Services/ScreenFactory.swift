@@ -8,7 +8,6 @@
 import SwiftUI
 
 final class ScreenFactory: ObservableObject {
-    
     @ViewBuilder
     func view(for route: Router.Route) -> some View {
         switch route {

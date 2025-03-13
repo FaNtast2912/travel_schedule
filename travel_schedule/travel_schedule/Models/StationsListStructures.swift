@@ -50,6 +50,7 @@ struct Station {
     let codes: Codes
 }
 
+// MARK: - Convert extension
 
 extension Settlement {
     static func from(apiSettlement: Components.Schemas.Settlement) -> Settlement {

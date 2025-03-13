@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SelectSityView: View {
-    
+    // MARK: - States
     @ObservedObject private var viewModel: ScheduleViewModel
     @ObservedObject private var router: Router
     @State private var cities: [Settlement] = []
@@ -22,6 +22,7 @@ struct SelectSityView: View {
         Settlement(title: "Омск", codes: nil, stations: []),
     ]
     
+    // MARK: - init
     init() {
         guard let vm = DIContainer.shared.resolve(ScheduleViewModel.self),
               let r = DIContainer.shared.resolve(Router.self) else {
@@ -31,7 +32,7 @@ struct SelectSityView: View {
         self.router = r
     }
     
-    
+    // MARK: - Body
     var body: some View {
         List(mockCities) { city in
             Button(action: {
@@ -45,6 +46,7 @@ struct SelectSityView: View {
     }
 }
 
+// MARK: - Previews
 #Preview {
     let coordinator = AppCoordinator()
     coordinator.setupDependencies()

@@ -17,6 +17,8 @@ struct MainScreen: View {
     }
 }
 
+
+// MARK: - Previews
 struct MainScreen_Previews: PreviewProvider {
     static var previews: some View {
         let coordinator = AppCoordinator()

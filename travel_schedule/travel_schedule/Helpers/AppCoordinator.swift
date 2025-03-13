@@ -9,6 +9,7 @@ import SwiftUI
 
 @MainActor
 final class AppCoordinator {
+    
     let container = DIContainer.shared
     
     init() {

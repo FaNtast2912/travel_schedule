@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 final class ScheduleViewModel: ObservableObject {
-    
+    // MARK: - Published Properties
     @Published var from: String = ""
     @Published var to: String = ""
     @Published var selectedStartCity: Settlement?
@@ -19,8 +19,10 @@ final class ScheduleViewModel: ObservableObject {
     @Published var allSettlements: [Settlement]?
     @Published var isEditingFromField: Bool = true
     
+    // MARK: - Private Properties
     private var networkService: TravelServiceFacade
     
+    // MARK: - Init
     init() {
         guard let networkService = DIContainer.shared.resolve(TravelServiceFacade.self) else {
             fatalError("Dependencies not registered")
@@ -28,6 +30,7 @@ final class ScheduleViewModel: ObservableObject {
         self.networkService = networkService
     }
     
+    // MARK: - Public Methods
     func swapLocations() {
         swapText()
         swapSelectedCities()
@@ -71,6 +74,8 @@ final class ScheduleViewModel: ObservableObject {
     }
 }
 
+
+// MARK: - Private Methods
 // Конвертация и сортировка
 private extension ScheduleViewModel {
     func sortSettlements(_ settlements: inout [Settlement]) {

@@ -8,8 +8,6 @@ import SwiftUI
 import OpenAPIURLSession
 
 protocol NetworkClientProtocol: ObservableObject {
-    
-    
     var carrierService: CarrierServiceProtocol { get }
     var copyrightService: CopyrightServiceProtocol { get }
     var nearestSettlementService: NearestSettlementServiceProtocol { get }

@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ScheduleView: View {
-    
+    // MARK: - States
     @ObservedObject private var viewModel: ScheduleViewModel
     @ObservedObject private var router: Router
     
+    // MARK: - init
     init() {
         guard let vm = DIContainer.shared.resolve(ScheduleViewModel.self),
               let r = DIContainer.shared.resolve(Router.self) else {
@@ -21,6 +22,7 @@ struct ScheduleView: View {
         self.router = r
     }
     
+    // MARK: - Body
     var body: some View {
         ZStack() {
             Background
@@ -38,7 +40,10 @@ struct ScheduleView: View {
             //            viewModel.fetchStationList()
         }
     }
-    
+}
+
+// MARK: - Subviews
+private extension ScheduleView {
     private var Background: some View {
         RoundedRectangle(cornerRadius: 20)
             .foregroundColor(Color(.ypBlue))
@@ -94,6 +99,7 @@ struct ScheduleView: View {
     }
 }
 
+    // MARK: - Previews
 struct ScheduleView_Previews: PreviewProvider {
     static var previews: some View {
         let coordinator = AppCoordinator()

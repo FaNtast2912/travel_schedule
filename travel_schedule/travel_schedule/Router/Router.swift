@@ -13,6 +13,7 @@ final class Router: ObservableObject {
     // MARK: - Public Properties
     @Published var path = NavigationPath()
     
+    // MARK: - Nested Types
     enum Route: Hashable {
         case firstView
         case secondView
@@ -21,6 +22,7 @@ final class Router: ObservableObject {
         case showStory(story: StoryModel)
     }
     
+    // MARK: - Public Methods
     @inlinable
     @inline(__always)
     func push(_ appRoute: Route) {
