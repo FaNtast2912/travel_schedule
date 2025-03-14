@@ -123,12 +123,17 @@ private extension ScheduleViewModel {
         for region in regions {
             for apiSettlement in (region.settlements ?? []) {
                 let settlement = convertToSettlement(apiSettlement)
-                settlements.append(settlement)
+            
+                if let title = settlement.title, !title.isEmpty {
+                    settlements.append(settlement)
+                }
             }
         }
+        
         sortSettlements(&settlements)
         return settlements
     }
+
     
     func convertToStation(_ apiStations: [Components.Schemas.Station]?) -> [Station] {
         let stations = (apiStations ?? []).map { apiStation in
