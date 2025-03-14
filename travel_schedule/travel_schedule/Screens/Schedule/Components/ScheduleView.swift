@@ -29,6 +29,7 @@ struct ScheduleView: View {
             HStack(spacing: 16.0) {
                 Textfields
                 Button(action: {
+                    viewModel.fetchStationList()
                     viewModel.swapLocations()
                 })
                 {
@@ -37,7 +38,7 @@ struct ScheduleView: View {
             }
         }
         .onAppear {
-            //            viewModel.fetchStationList()
+            
         }
     }
 }

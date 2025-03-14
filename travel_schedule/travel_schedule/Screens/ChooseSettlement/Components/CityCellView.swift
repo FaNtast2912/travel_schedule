@@ -15,6 +15,7 @@ struct CityCellView: View {
         HStack(spacing: 4.0) {
             Text(cityName)
                 .foregroundStyle(Color.ypBlack)
+                .font(.system(size: 17, weight: .light, design: .default))
             Spacer()
             Image(systemName: "chevron.right")
             .foregroundStyle(.ypBlack)
@@ -23,7 +24,6 @@ struct CityCellView: View {
             .frame(width: 24, height: 24)
         }
         .frame(width: .infinity, height: 60)
-        .fixedSize(horizontal: false, vertical: true)
         .background(Color.white)
     }
 

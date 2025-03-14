@@ -18,9 +18,12 @@ final class ScheduleViewModel: ObservableObject {
     @Published var selectedEndStation: Station?
     @Published var allSettlements: [Settlement]?
     @Published var isEditingFromField: Bool = true
+    @Published var searchText: String = ""
+    @Published private(set) var filteredSettlements: [Settlement] = []
     
     // MARK: - Private Properties
     private var networkService: TravelServiceFacade
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init
     init() {
@@ -28,6 +31,14 @@ final class ScheduleViewModel: ObservableObject {
             fatalError("Dependencies not registered")
         }
         self.networkService = networkService
+        
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] text in
+                self?.filterCities(by: text)
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Public Methods
@@ -62,6 +73,7 @@ final class ScheduleViewModel: ObservableObject {
                 
                 await MainActor.run { [settlements] in
                     allSettlements = settlements
+                    filteredSettlements = settlements
                 }
                 
                 for settlement in settlements {
@@ -148,5 +160,25 @@ private extension ScheduleViewModel {
         let buffer = from
         from = to
         to = buffer
+    }
+    
+    func filterCities(by query: String) {
+        guard let settlements = allSettlements else {
+            filteredSettlements = []
+            return
+        }
+        
+        if query.isEmpty {
+            filteredSettlements = settlements.filter { $0.title != nil }
+        } else {
+            filteredSettlements = settlements.filter { city in
+                if let title = city.title?.lowercased(), title.contains(query.lowercased()) {
+                    return true
+                }
+                return city.stations.contains { station in
+                    station.title.lowercased().contains(query.lowercased())
+                }
+            }
+        }
     }
 }
