@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CityCellView: View {
+struct ScheduleCellView: View {
     
     @State var cityName: String
     let rowHeight: Double = 60
@@ -35,6 +35,6 @@ struct CityCellView: View {
         .frame(width: .infinity, height: .infinity)
         .ignoresSafeArea(.all)
         .overlay(
-            CityCellView(cityName: "Мурманск")
+            ScheduleCellView(cityName: "Мурманск")
         )
 }

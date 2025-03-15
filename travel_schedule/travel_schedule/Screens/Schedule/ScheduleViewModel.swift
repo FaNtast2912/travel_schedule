@@ -17,9 +17,11 @@ final class ScheduleViewModel: ObservableObject {
     @Published var selectedStartStation: Station?
     @Published var selectedEndStation: Station?
     @Published var allSettlements: [Settlement]?
+    @Published var allStations: [Station]?
     @Published var isEditingFromField: Bool = true
     @Published var searchText: String = ""
     @Published private(set) var filteredSettlements: [Settlement] = []
+    @Published private(set) var filteredStations: [Station] = []
     
     // MARK: - Private Properties
     private var networkService: TravelServiceFacade
@@ -31,31 +33,58 @@ final class ScheduleViewModel: ObservableObject {
             fatalError("Dependencies not registered")
         }
         self.networkService = networkService
-        
-        $searchText
-            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
-            .removeDuplicates()
-            .sink { [weak self] text in
-                self?.filterCities(by: text)
-            }
-            .store(in: &cancellables)
+        setSearchTextBinding()
     }
     
     // MARK: - Public Methods
     func swapLocations() {
         swapText()
         swapSelectedCities()
+        swapSelectedStations()
     }
-    
     
     func setSelectedCity(_ city: Settlement) {
         if isEditingFromField {
-            from = city.title ?? ""
             selectedStartCity = city
+            allStations = city.stations
+            filteredStations = city.stations
         } else {
-            to = city.title ?? ""
             selectedEndCity = city
+            allStations = city.stations
+            filteredStations = city.stations
         }
+    }
+    
+    func setSelectedStation(_ station: Station) {
+        if isEditingFromField {
+            from = "\(selectedStartCity?.title ?? "")(\(station.title))"
+            selectedStartStation = station
+        } else {
+            to = "\(selectedEndCity?.title ?? "")(\(station.title))"
+            selectedEndStation = station
+        }
+    }
+    
+    func resetViewModel() {
+        if isEditingFromField {
+            selectedStartCity = nil
+            selectedStartStation = nil
+            from = ""
+        } else {
+            selectedEndCity = nil
+            selectedEndStation = nil
+            to = ""
+        }
+        allStations = nil
+        filteredStations = []
+        if let settlements = allSettlements {
+            filteredSettlements = settlements
+        }
+    }
+    
+    func resetStationSelection() {
+        allStations = nil
+        filteredStations = []
     }
     
     func fetchStationList() {
@@ -155,10 +184,31 @@ private extension ScheduleViewModel {
 
 // Внутренняя логика приложения
 private extension ScheduleViewModel {
+    
+    func setSearchTextBinding() {
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] text in
+                if self?.selectedStartCity != nil || self?.selectedEndCity != nil {
+                    self?.filterStations(by: text)
+                } else {
+                    self?.filterCities(by: text)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     func swapSelectedCities() {
         let buffer = selectedStartCity
         selectedStartCity = selectedEndCity
         selectedEndCity = buffer
+    }
+    
+    func swapSelectedStations() {
+        let buffer = selectedStartStation
+        selectedStartStation = selectedEndStation
+        selectedEndStation = buffer
     }
     
     func swapText() {
@@ -179,10 +229,24 @@ private extension ScheduleViewModel {
             filteredSettlements = settlements.filter { city in
                 if let title = city.title?.lowercased(), title.contains(query.lowercased()) {
                     return true
+                } else {
+                    return false
                 }
-                return city.stations.contains { station in
-                    station.title.lowercased().contains(query.lowercased())
-                }
+            }
+        }
+    }
+    
+    func filterStations(by query: String) {
+        guard let stations = allStations else {
+            filteredStations = []
+            return
+        }
+        
+        if query.isEmpty {
+            filteredStations = stations
+        } else {
+            filteredStations = stations.filter { station in
+                station.title.lowercased().contains(query.lowercased())
             }
         }
     }

@@ -64,7 +64,7 @@ private extension ScheduleView {
                         .contentShape(Rectangle())
                         .onTapGesture {
                             viewModel.isEditingFromField = true
-                            router.push(.firstView)
+                            router.push(.selectCityView)
                         }
                 )
             TextField("to", text: $viewModel.to, prompt: Text("Куда"))
@@ -78,7 +78,7 @@ private extension ScheduleView {
                         .contentShape(Rectangle())
                         .onTapGesture {
                             viewModel.isEditingFromField = false
-                            router.push(.firstView)
+                            router.push(.selectCityView)
                         }
                 )
         }

@@ -40,7 +40,8 @@ struct Settlement: Identifiable {
 }
 
 // MARK: - Station structure
-struct Station {
+struct Station: Identifiable {
+    let id = UUID()
     let title: String
     let longitude: Double
     let latitude: Double

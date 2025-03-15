@@ -15,8 +15,8 @@ final class Router: ObservableObject {
     
     // MARK: - Nested Types
     enum Route: Hashable {
-        case firstView
-        case secondView
+        case selectCityView
+        case selectStationView
         case thirdView
         case storiesView
         case showStory(story: StoryModel)
