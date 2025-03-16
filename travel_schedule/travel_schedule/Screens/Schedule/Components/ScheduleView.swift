@@ -24,21 +24,27 @@ struct ScheduleView: View {
     
     // MARK: - Body
     var body: some View {
-        ZStack() {
-            Background
-            HStack(spacing: 16.0) {
-                Textfields
-                Button(action: {
-                    viewModel.fetchStationList()
-                    viewModel.swapLocations()
-                })
-                {
-                    ChangeButtonView
+        VStack(spacing: 16.0) {
+            ZStack() {
+                Background
+                HStack(spacing: 16.0) {
+                    Textfields
+                    Button(action: {
+                        viewModel.fetchStationList()
+                        viewModel.swapLocations()
+                    })
+                    {
+                        ChangeButtonView
+                    }
                 }
             }
-        }
-        .onAppear {
-            
+            if viewModel.shouldSearchCarriers {
+                SearchButton {
+                    print("Кнопка была нажата!")
+                    viewModel.fetchSegments()
+                    router.push(.carriersListView)
+                }
+            }
         }
     }
 }
@@ -71,7 +77,7 @@ private extension ScheduleView {
                 .padding(.trailing, 13)
                 .padding(.leading, 16)
                 .padding(.bottom, 14)
-                .disabled(true) // Отключает редактирование
+                .disabled(true)
                 .overlay(
                     Rectangle()
                         .fill(Color.clear)
@@ -100,7 +106,7 @@ private extension ScheduleView {
     }
 }
 
-    // MARK: - Previews
+// MARK: - Previews
 struct ScheduleView_Previews: PreviewProvider {
     static var previews: some View {
         let coordinator = AppCoordinator()

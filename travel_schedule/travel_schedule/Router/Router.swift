@@ -17,7 +17,7 @@ final class Router: ObservableObject {
     enum Route: Hashable {
         case selectCityView
         case selectStationView
-        case thirdView
+        case carriersListView
         case storiesView
         case showStory(story: StoryModel)
     }

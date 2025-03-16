@@ -7,7 +7,7 @@
 
 //getScheduleBetweenStations
 
-typealias Search = Components.Schemas.Search
+typealias Search = Components.Schemas.Segments
 
 protocol ScheduleBetweenStationsServiceProtocol {
     func getScheduleBetweenStations(from: String, to: String, transportTypes: String, date: String) async throws -> Search
@@ -23,13 +23,14 @@ final class ScheduleBetweenStationsService: ScheduleBetweenStationsServiceProtoc
     }
     
     func getScheduleBetweenStations(from startStation: String, to endStation: String, transportTypes: String, date: String) async throws -> Search {
-        let response = try await client.getScheduleBetweenStations(
+        let response = try await client.getSchedualBetweenStations(
             query: .init(
                 apikey: apikey,
                 from: startStation,
                 to: endStation,
                 date: date,
-                transport_types: transportTypes
+                transport_types: transportTypes,
+                transfers: true
             )
         )
         return try response.ok.body.json

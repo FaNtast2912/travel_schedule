@@ -18,10 +18,14 @@ final class ScheduleViewModel: ObservableObject {
     @Published var selectedEndStation: Station?
     @Published var allSettlements: [Settlement]?
     @Published var allStations: [Station]?
+    @Published var allSegments: [Segment?]? = []
     @Published var isEditingFromField: Bool = true
     @Published var searchText: String = ""
     @Published private(set) var filteredSettlements: [Settlement] = []
     @Published private(set) var filteredStations: [Station] = []
+    @Published private(set) var filteredSegments: [Segment] = []
+    @Published var shouldSearchCarriers: Bool = false
+    @Published var hasFilters: Bool = false
     
     // MARK: - Private Properties
     private var networkService: TravelServiceFacade
@@ -47,11 +51,11 @@ final class ScheduleViewModel: ObservableObject {
         if isEditingFromField {
             selectedStartCity = city
             allStations = city.stations
-            filteredStations = city.stations
+            filteredStations = allStations?.filter { $0.stationType == "train_station" || $0.transportType == "train" } ?? []
         } else {
             selectedEndCity = city
             allStations = city.stations
-            filteredStations = city.stations
+            filteredStations = allStations?.filter { $0.stationType == "train_station" || $0.transportType == "train" } ?? []
         }
     }
     
@@ -59,9 +63,11 @@ final class ScheduleViewModel: ObservableObject {
         if isEditingFromField {
             from = "\(selectedStartCity?.title ?? "")(\(station.title))"
             selectedStartStation = station
+            shouldNavigate()
         } else {
             to = "\(selectedEndCity?.title ?? "")(\(station.title))"
             selectedEndStation = station
+            shouldNavigate()
         }
     }
     
@@ -104,15 +110,36 @@ final class ScheduleViewModel: ObservableObject {
                     allSettlements = settlements
                     filteredSettlements = settlements
                 }
-                
-                for settlement in settlements {
-                    print("\(settlement.title ?? ""): \(settlement.stations.count) stations")
-                }
             } catch {
                 print("Ошибка загрузки станций: \(error.localizedDescription)")
             }
         }
     }
+    
+    func fetchSegments() {
+            Task {
+                do {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    let date = dateFormatter.string(from: Date())
+                    
+                    guard let fromCode = selectedStartCity?.codes?.yandexCode,
+                          let toCode = selectedEndCity?.codes?.yandexCode else {
+                        return
+                    }
+                    
+                    let response = try await networkService.getScheduleBetweenStations(from: fromCode, to: toCode, transportTypes: "train", date: date)
+                    let filteredResponse = response.segments?.compactMap { $0 } ?? []
+                    await MainActor.run {
+                        allSegments = filteredResponse.compactMap { Segment.from(apiSegment: $0) }
+                        filteredSegments = filteredResponse.compactMap { Segment.from(apiSegment: $0) }
+                        print(allSegments)
+                    }
+                } catch {
+                    print("Ошибка загрузки сегментов: \(error.localizedDescription)")
+                }
+            }
+        }
 }
 
 
@@ -152,7 +179,7 @@ private extension ScheduleViewModel {
         for region in regions {
             for apiSettlement in (region.settlements ?? []) {
                 let settlement = convertToSettlement(apiSettlement)
-            
+                
                 if let title = settlement.title, !title.isEmpty {
                     settlements.append(settlement)
                 }
@@ -162,7 +189,7 @@ private extension ScheduleViewModel {
         sortSettlements(&settlements)
         return settlements
     }
-
+    
     
     func convertToStation(_ apiStations: [Components.Schemas.Station]?) -> [Station] {
         let stations = (apiStations ?? []).map { apiStation in
@@ -176,7 +203,7 @@ private extension ScheduleViewModel {
         
         return Settlement(
             title: apiSettlement.title,
-            codes: apiSettlement.codes != nil ? Codes(yandexCode: apiSettlement.codes?.yandex_code) : nil,
+            codes: apiSettlement.codes != nil ? Codes(yandexCode: apiSettlement.codes?.yandex_code, esrCode: "") : nil,
             stations: stations
         )
     }
@@ -249,5 +276,12 @@ private extension ScheduleViewModel {
                 station.title.lowercased().contains(query.lowercased())
             }
         }
+    }
+    
+    func shouldNavigate() {
+        guard let selectedStartStation, let selectedEndStation else {
+            return
+        }
+        shouldSearchCarriers = true
     }
 }

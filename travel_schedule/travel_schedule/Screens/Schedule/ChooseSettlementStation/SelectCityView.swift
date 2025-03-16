@@ -81,9 +81,9 @@ struct SelectCityView: View {
 }
 
 // MARK: - Previews
-//#Preview {
-//    let coordinator = AppCoordinator()
-//    coordinator.setupDependencies()
-//
-//    return SelectCityView()
-//}
+#Preview {
+    let coordinator = AppCoordinator()
+    coordinator.setupDependencies()
+
+    return SelectCityView()
+}

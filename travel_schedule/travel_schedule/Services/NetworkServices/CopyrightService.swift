@@ -5,7 +5,7 @@
 //  Created by Maksim Zakharov on 11.02.2025.
 //
 
-typealias Copyright = Components.Schemas.Copyright
+typealias Copyright = Components.Schemas.CopyrightResponse
 
 protocol CopyrightServiceProtocol {
     func getCopyright() async throws -> Copyright

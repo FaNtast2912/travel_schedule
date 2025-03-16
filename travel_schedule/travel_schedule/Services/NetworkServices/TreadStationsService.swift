@@ -5,7 +5,7 @@
 //  Created by Maksim Zakharov on 11.02.2025.
 //
 
-typealias Thread = Components.Schemas.Thread
+typealias Thread = Components.Schemas.ThreadStationsResponse
 
 protocol TreadStationsServiceProtocol {
     func getThreadStations(uid: String) async throws -> Thread
@@ -21,7 +21,7 @@ final class TreadStationsService: TreadStationsServiceProtocol {
     }
     
     func getThreadStations(uid: String) async throws -> Thread {
-        let response = try await client.getThreadStations(
+        let response = try await client.getRouteStations(
             query: .init(
                 apikey: apikey,
                 uid: uid

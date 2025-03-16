@@ -5,7 +5,7 @@
 //  Created by Maksim Zakharov on 11.02.2025.
 //
 
-typealias Schedule = Components.Schemas.Schedule
+typealias Schedule = Components.Schemas.ScheduleResponse
 
 protocol ScheduleOnStationServiceProtocol {
     func getScheduleOnStation(station: String, transportTypes: String, date: String) async throws -> Schedule
@@ -21,7 +21,7 @@ final class ScheduleOnStationService: ScheduleOnStationServiceProtocol {
     }
     
     func  getScheduleOnStation(station: String, transportTypes: String, date: String) async throws -> Schedule {
-        let response = try await client.getScheduleOnStation(
+        let response = try await client.getStationSchedule(
             query: .init(
                 apikey: apikey,
                 station: station,
