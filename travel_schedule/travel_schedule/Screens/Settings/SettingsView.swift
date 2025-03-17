@@ -39,7 +39,7 @@ struct SettingsView: View {
         HStack() {
             Text("Пользовательское соглашение")
             Spacer()
-            Image("Chevron")
+            Image(systemName: "chevron.right")
         }
         .foregroundStyle(.ypBlack)
         .background(.ypWhite)
@@ -67,7 +67,7 @@ struct SettingsView: View {
 
 
 #Preview {
-    let coordinator = AppCoordinator()
+    let coordinator = AppCoordinator.shared
     coordinator.setupDependencies()
     
     return SettingsView()

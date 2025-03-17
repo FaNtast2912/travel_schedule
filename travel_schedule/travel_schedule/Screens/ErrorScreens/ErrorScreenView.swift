@@ -69,7 +69,7 @@ struct ErrorScreenView: View {
 }
 
 #Preview {
-    let coordinator = AppCoordinator()
+    let coordinator = AppCoordinator.shared
     coordinator.setupDependencies()
     
     

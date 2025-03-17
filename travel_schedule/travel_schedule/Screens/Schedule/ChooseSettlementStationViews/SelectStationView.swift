@@ -84,7 +84,7 @@ struct SelectStationView: View {
 }
 
 #Preview {
-    let coordinator = AppCoordinator()
+    let coordinator = AppCoordinator.shared
     coordinator.setupDependencies()
 
     return SelectStationView()

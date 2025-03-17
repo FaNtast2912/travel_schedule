@@ -11,7 +11,12 @@ import SwiftUI
 @MainActor
 final class Router: ObservableObject {
     // MARK: - Public Properties
+    static let shared = Router()
     @Published var path = NavigationPath()
+    
+    
+    // MARK: - init
+    private init() { }
     
     // MARK: - Nested Types
     enum Route: Hashable {

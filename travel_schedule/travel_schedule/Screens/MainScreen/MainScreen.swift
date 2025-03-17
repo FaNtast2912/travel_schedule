@@ -21,7 +21,7 @@ struct MainScreen: View {
 // MARK: - Previews
 struct MainScreen_Previews: PreviewProvider {
     static var previews: some View {
-        let coordinator = AppCoordinator()
+        let coordinator = AppCoordinator.shared
         coordinator.setupDependencies()
         
         return coordinator.start()
@@ -30,7 +30,7 @@ struct MainScreen_Previews: PreviewProvider {
 
 struct MainScreenPreviewOnly_Previews: PreviewProvider {
     static var previews: some View {
-        let coordinator = AppCoordinator()
+        let coordinator = AppCoordinator.shared
         coordinator.setupDependencies()
         
         return MainScreen()

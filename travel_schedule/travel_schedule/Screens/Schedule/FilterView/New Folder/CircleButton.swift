@@ -38,7 +38,7 @@ struct CircleButton: View {
 }
 
 #Preview {
-    let coordinator = AppCoordinator()
+    let coordinator = AppCoordinator.shared
     coordinator.setupDependencies()
 
     return CircleButton(checkBox: true)

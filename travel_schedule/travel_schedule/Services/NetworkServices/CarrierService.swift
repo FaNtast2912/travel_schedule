@@ -58,7 +58,7 @@ final class CarrierService: CarrierServiceProtocol {
                 case 404:
                     return .notFound
                 case 500...599:
-                    return .serverError(code: statusCode)
+                    return .serverError
                 default:
                     return .genericError
                 }

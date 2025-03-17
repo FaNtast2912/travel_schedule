@@ -10,9 +10,12 @@ import SwiftUI
 @MainActor
 final class AppCoordinator {
     
-    let container = DIContainer.shared
+    static let shared = AppCoordinator()
     
-    init() {
+    let container = DIContainer.shared
+    let router = Router.shared
+    
+    private init() {
         customizeTabBarAppearance()
     }
     
@@ -26,7 +29,6 @@ final class AppCoordinator {
         let screenFactory = ScreenFactory()
         container.register(screenFactory, for: ScreenFactory.self)
         
-        let router = Router()
         container.register(router, for: Router.self)
         
         let networkService = TravelServiceFacade()
@@ -70,9 +72,14 @@ final class AppCoordinator {
         let appearance = UITabBarAppearance()
         
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = isDark ? UIColor(.ypBlack) : UIColor(.ypWhite)
+        appearance.backgroundColor = UIColor(.ypWhite)
         
-        // TO DO возможно дополнительно надо поменять цвета
+        appearance.shadowColor = isDark ?  UIColor(.black) : UIColor(.ypBlackConstant)
+        
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.ypGray)]
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(.ypBlack)]
+        appearance.stackedLayoutAppearance.normal.iconColor = UIColor(.ypGray)
+        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(.ypBlack)
         
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance

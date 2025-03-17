@@ -50,7 +50,7 @@ struct UserAreementView: View {
 }
 
 #Preview {
-    let coordinator = AppCoordinator()
+    let coordinator = AppCoordinator.shared
     coordinator.setupDependencies()
     
     return UserAreementView()

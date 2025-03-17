@@ -43,7 +43,7 @@ struct TimeIntervalCellView: View {
 }
 
 #Preview {
-    let coordinator = AppCoordinator()
+    let coordinator = AppCoordinator.shared
     coordinator.setupDependencies()
 
     return TimeIntervalCellView(timeInterval: .morning)

@@ -58,37 +58,20 @@ private extension ScheduleView {
     
     private var Textfields: some View {
         VStack(spacing: 28.0) {
-            TextField("from", text: $viewModel.from, prompt: Text("Откуда"))
-                .padding(.trailing, 13)
-                .padding(.leading, 16)
-                .padding(.top, 14)
-                .disabled(true)
-                .overlay(
-                    Rectangle()
-                        .fill(Color.clear)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            viewModel.isEditingFromField = true
-                            router.push(.selectCityView)
-                        }
-                )
-            TextField("to", text: $viewModel.to, prompt: Text("Куда"))
-                .padding(.trailing, 13)
-                .padding(.leading, 16)
-                .padding(.bottom, 14)
-                .disabled(true)
-                .overlay(
-                    Rectangle()
-                        .fill(Color.clear)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            viewModel.isEditingFromField = false
-                            router.push(.selectCityView)
-                        }
-                )
+            getSelectDestinationView(text: viewModel.from, placeholder: "Откуда")
+                .onTapGesture {
+                    viewModel.isEditingFromField = true
+                    router.push(.selectCityView)
+                }
+            
+            getSelectDestinationView(text: viewModel.to, placeholder: "Куда")
+                .onTapGesture {
+                    viewModel.isEditingFromField = false
+                    router.push(.selectCityView)
+                }
         }
         .frame(width: 259, height: 96)
-        .background(Color.white)
+        .background(Color.ypWhiteConstant)
         .cornerRadius(20)
     }
     
@@ -103,12 +86,25 @@ private extension ScheduleView {
         }
         .frame(width: 36, height: 36)
     }
+    
+    @ViewBuilder
+    func getSelectDestinationView(text: String, placeholder: String) -> some View {
+        ZStack(alignment: .leading) {
+            Color.ypWhiteConstant
+            Text(text)
+                .padding(.vertical, 14)
+                .padding([.leading], 16)
+                .lineLimit(1)
+                .foregroundStyle(text != "" ? .ypBlackConstant : .ypGray)
+        }
+        .cornerRadius(20)
+    }
 }
 
 // MARK: - Previews
 struct ScheduleView_Previews: PreviewProvider {
     static var previews: some View {
-        let coordinator = AppCoordinator()
+        let coordinator = AppCoordinator.shared
         coordinator.setupDependencies()
         
         return coordinator.start()
@@ -117,7 +113,7 @@ struct ScheduleView_Previews: PreviewProvider {
 
 struct ScheduleViewPreviewOnly_Previews: PreviewProvider {
     static var previews: some View {
-        let coordinator = AppCoordinator()
+        let coordinator = AppCoordinator.shared
         coordinator.setupDependencies()
         
         return ScheduleView()

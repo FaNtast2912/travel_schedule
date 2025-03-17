@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct travel_scheduleApp: App {
-    private let coordinator = AppCoordinator()
+    private let coordinator = AppCoordinator.shared
     @StateObject private var themeManager = ThemeManager()
     
     var body: some Scene {
