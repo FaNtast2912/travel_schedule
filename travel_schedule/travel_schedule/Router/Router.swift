@@ -21,6 +21,8 @@ final class Router: ObservableObject {
         case filterView
         case carrierCardView
         case userAreementView
+        case networkErrorView
+        case serverErrorView
         case storiesView
         case showStory(story: StoryModel)
     }

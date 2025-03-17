@@ -6,7 +6,6 @@
 //
 import Foundation
 import OpenAPIRuntime
-import OpenAPIURLSession
 
 typealias Carrier = Components.Schemas.CarrierResponse
 
@@ -24,13 +23,50 @@ final class CarrierService: CarrierServiceProtocol {
     }
     
     func getCarrier(code: String) async throws -> Carrier {
-        let response = try await client.getCarrierInfo(
-            query: .init(
-                apikey: apikey,
-                code: code
+        do {
+            let response = try await client.getCarrierInfo(
+                query: .init(
+                    apikey: apikey,
+                    code: code
+                )
             )
-        )
-        return try response.ok.body.json
+            return try response.ok.body.json
+        } catch {
+            throw mapError(error)
+        }
+        
+    }
+    
+    private func mapError(_ error: Error) -> NetworkError {
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet, .networkConnectionLost:
+                return .internetConnectError
+            case .timedOut:
+                return .requestTimeout
+            default:
+                return .genericError
+            }
+        }
+        
+        if let clientError = error as? ClientError {
+            if let response = clientError.response {
+                let statusCode = response.status.code
+                switch statusCode {
+                case 401:
+                    return .unauthorized
+                case 404:
+                    return .notFound
+                case 500...599:
+                    return .serverError(code: statusCode)
+                default:
+                    return .genericError
+                }
+            }
+            return .genericError
+        }
+        
+        return .genericError
     }
 }
 

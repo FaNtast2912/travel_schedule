@@ -23,6 +23,10 @@ final class ScreenFactory: ObservableObject {
             CarrierCardView()
         case .userAreementView:
             UserAreementView()
+        case .networkErrorView:
+            ErrorScreenView(error: .internetConnectError)
+        case .serverErrorView:
+            ErrorScreenView(error: .serverError)
         case .storiesView:
             StoriesListView()
         case let .showStory(story):

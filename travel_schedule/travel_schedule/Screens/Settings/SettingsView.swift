@@ -67,5 +67,8 @@ struct SettingsView: View {
 
 
 #Preview {
-    SettingsView()
+    let coordinator = AppCoordinator()
+    coordinator.setupDependencies()
+    
+    return SettingsView()
 }

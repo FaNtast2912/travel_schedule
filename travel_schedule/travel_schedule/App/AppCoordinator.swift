@@ -17,6 +17,9 @@ final class AppCoordinator {
     }
     
     func setupDependencies() {
+        let networkMonitor = NetworkMonitor()
+            container.register(networkMonitor, for: NetworkMonitor.self)
+        
         let themeManager = ThemeManager()
                 container.register(themeManager, for: ThemeManager.self)
         

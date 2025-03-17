@@ -33,15 +33,19 @@ final class ScheduleViewModel: ObservableObject {
     @Published var shouldSearchStation: Bool = false
     
     // MARK: - Private Properties
+    private var router: Router
     private var networkService: TravelServiceFacade
     private var cancellables = Set<AnyCancellable>()
+    private let networkMonitor: NetworkMonitor
     
     // MARK: - Init
     init() {
-        guard let networkService = DIContainer.shared.resolve(TravelServiceFacade.self) else {
+        guard let networkService = DIContainer.shared.resolve(TravelServiceFacade.self), let networkMonitor = DIContainer.shared.resolve(NetworkMonitor.self), let r = DIContainer.shared.resolve(Router.self) else {
             fatalError("Dependencies not registered")
         }
         self.networkService = networkService
+        self.networkMonitor = networkMonitor
+        self.router = r
         setSearchTextBinding()
         setFiltersBinding()
     }
@@ -120,7 +124,8 @@ final class ScheduleViewModel: ObservableObject {
                     allSettlements = settlements
                     filteredSettlements = settlements
                 }
-            } catch {
+            } catch let error as NetworkError {
+                await handleError(error)
                 print("Ошибка загрузки станций: \(error.localizedDescription)")
             }
         }
@@ -154,7 +159,8 @@ final class ScheduleViewModel: ObservableObject {
                     filteredSegments = filteredResponse.compactMap { Segment.from(apiSegment: $0) }
                     applyFilters()
                 }
-            } catch {
+            } catch let error as NetworkError {
+                await handleError(error)
                 print("Ошибка загрузки сегментов: \(error.localizedDescription)")
             }
         }
@@ -230,6 +236,19 @@ private extension ScheduleViewModel {
 
 // Внутренняя логика приложения
 private extension ScheduleViewModel {
+    
+    @MainActor
+    func handleError(_ error: NetworkError) {
+        switch error {
+        case .internetConnectError:
+            router.push(.networkErrorView)
+        case .serverError:
+            router.push(.serverErrorView)
+        default:
+            //TO DO сделать обработку других ошибок и их отображение
+            router.push(.networkErrorView)
+        }
+    }
     
     func setSearchTextBinding() {
         $searchText

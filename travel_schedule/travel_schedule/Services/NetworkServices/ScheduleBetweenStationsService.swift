@@ -7,6 +7,9 @@
 
 //getScheduleBetweenStations
 
+import Foundation
+import OpenAPIRuntime
+
 typealias Search = Components.Schemas.Segments
 
 protocol ScheduleBetweenStationsServiceProtocol {
@@ -23,16 +26,53 @@ final class ScheduleBetweenStationsService: ScheduleBetweenStationsServiceProtoc
     }
     
     func getScheduleBetweenStations(from startStation: String, to endStation: String, transportTypes: String, date: String) async throws -> Search {
-        let response = try await client.getSchedualBetweenStations(
-            query: .init(
-                apikey: apikey,
-                from: startStation,
-                to: endStation,
-                date: date,
-                transport_types: transportTypes,
-                transfers: true
+        do {
+            let response = try await client.getSchedualBetweenStations(
+                query: .init(
+                    apikey: apikey,
+                    from: startStation,
+                    to: endStation,
+                    date: date,
+                    transport_types: transportTypes,
+                    transfers: true
+                )
             )
-        )
-        return try response.ok.body.json
+            return try response.ok.body.json
+        } catch {
+            throw mapError(error)
+        }
+        
+    }
+    
+    private func mapError(_ error: Error) -> NetworkError {
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet, .networkConnectionLost:
+                return .internetConnectError
+            case .timedOut:
+                return .requestTimeout
+            default:
+                return .genericError
+            }
+        }
+        
+        if let clientError = error as? ClientError {
+            if let response = clientError.response {
+                let statusCode = response.status.code
+                switch statusCode {
+                case 401:
+                    return .unauthorized
+                case 404:
+                    return .notFound
+                case 500...599:
+                    return .serverError(code: statusCode)
+                default:
+                    return .genericError
+                }
+            }
+            return .genericError
+        }
+        
+        return .genericError
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OpenAPIRuntime
 
 typealias StationsList = Components.Schemas.AllStationsResponse
 
@@ -23,10 +24,46 @@ final class StationsListService: StationsListServiceProtocol {
     }
     
     func getStationsList() async throws -> StationsList {
-        let response = try await client.getAllStations(query: .init(apikey: apikey))
-        let sequence = try response.ok.body.text_html_charset_utf_hyphen_8
-        let data = try await Data(collecting: sequence, upTo: 40 * 1024 * 1024)
-        let allStations = try JSONDecoder().decode(StationsList.self, from: data)
-        return allStations
+        do {
+            let response = try await client.getAllStations(query: .init(apikey: apikey))
+            let sequence = try response.ok.body.text_html_charset_utf_hyphen_8
+            let data = try await Data(collecting: sequence, upTo: 40 * 1024 * 1024)
+            let allStations = try JSONDecoder().decode(StationsList.self, from: data)
+            return allStations
+        } catch {
+            throw mapError(error)
+        }
+    }
+    
+    private func mapError(_ error: Error) -> NetworkError {
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet, .networkConnectionLost:
+                return .internetConnectError
+            case .timedOut:
+                return .requestTimeout
+            default:
+                return .genericError
+            }
+        }
+        
+        if let clientError = error as? ClientError {
+            if let response = clientError.response {
+                let statusCode = response.status.code
+                switch statusCode {
+                case 401:
+                    return .unauthorized
+                case 404:
+                    return .notFound
+                case 500...599:
+                    return .serverError(code: statusCode)
+                default:
+                    return .genericError
+                }
+            }
+            return .genericError
+        }
+        
+        return .genericError
     }
 }
