@@ -7,37 +7,12 @@
 
 import SwiftUI
 
-enum NetworkError: Error, LocalizedError {
-    case serverError
-    case internetConnectError
-    case requestTimeout
-    case unauthorized
-    case notFound
-    case genericError
-    
-    var errorDescription: String? {
-        switch self {
-        case .internetConnectError:
-            return "Нет подключения к интернету"
-        case .serverError:
-            return "Ошибка сервера"
-        case .requestTimeout:
-            return "Таймаут запроса"
-        case .unauthorized:
-            return "Требуется авторизация"
-        case .notFound:
-            return "Ресурс не найден"
-        default:
-            return "Произошла ошибка"
-        }
-    }
-}
-
 struct ErrorScreenView: View {
     // MARK: Private Properties
+    private let error: NetworkError
     private let image: String
     private let label: String
-    
+    private let networkMonitor: NetworkMonitor
     // MARK: - States
     @ObservedObject private var router: Router
     
@@ -65,10 +40,12 @@ struct ErrorScreenView: View {
             self.label = "Непредвиденная ошибка"
         }
         
-        guard let r = DIContainer.shared.resolve(Router.self) else {
+        guard let r = DIContainer.shared.resolve(Router.self), let networkMonitor = DIContainer.shared.resolve(NetworkMonitor.self) else {
             fatalError("Dependencies not registered")
         }
         self.router = r
+        self.networkMonitor = networkMonitor
+        self.error = error
         setupNavBarTitle()
     }
     
@@ -83,6 +60,11 @@ struct ErrorScreenView: View {
             }
         }
         .customNavigationModifier(router: router, title: "")
+        .onChange(of: networkMonitor.isConnected) { _ in
+            if networkMonitor.isConnected && error == .internetConnectError {
+                router.pop()
+            }
+        }
     }
 }
 
