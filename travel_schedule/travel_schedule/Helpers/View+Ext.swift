@@ -36,10 +36,8 @@ struct CustomNavigationModifier: ViewModifier {
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     Button(action: {
-                        if let viewModel, viewModel.shouldSearchCity {
-                            viewModel.resetCitySelection()
-                        } else if let viewModel, viewModel.shouldSearchStation {
-                            viewModel.resetStationSelection()
+                        if let viewModel {
+                            viewModel.resetSelection()
                         }
                         router?.pop()
                     }) {

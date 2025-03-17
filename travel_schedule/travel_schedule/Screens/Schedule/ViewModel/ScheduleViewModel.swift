@@ -83,7 +83,7 @@ final class ScheduleViewModel: ObservableObject {
         }
     }
     
-    func resetCitySelection() {
+    func resetSelection() {
         if isEditingFromField {
             selectedStartCity = nil
             selectedStartStation = nil
@@ -93,16 +93,6 @@ final class ScheduleViewModel: ObservableObject {
             selectedEndCity = nil
             selectedEndStation = nil
             to = ""
-            shouldNavigate()
-        }
-    }
-    
-    func resetStationSelection() {
-        if isEditingFromField {
-            selectedStartStation = nil
-            shouldNavigate()
-        } else {
-            selectedEndStation = nil
             shouldNavigate()
         }
     }
@@ -151,7 +141,6 @@ final class ScheduleViewModel: ObservableObject {
                       let toCode = selectedEndCity?.codes?.yandexCode else {
                     return
                 }
-                
                 let response = try await networkService.getScheduleBetweenStations(from: fromCode, to: toCode, transportTypes: "train", date: date)
                 let filteredResponse = response.segments?.compactMap { $0 } ?? []
                 await MainActor.run {

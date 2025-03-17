@@ -533,6 +533,13 @@ components:
               $ref: '#/components/schemas/Transfers'
         has_transfers:
           type: boolean
+        details:
+            type: array
+            items:
+                type: object
+                properties:
+                    thread:
+                        $ref: '#/components/schemas/Thread'
     Pagination:
       type: object
       properties:

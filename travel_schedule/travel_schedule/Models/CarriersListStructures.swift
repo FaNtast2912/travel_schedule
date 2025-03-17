@@ -25,7 +25,7 @@ enum TimeIntervals: String {
     case afternoon = "День 12:00 - 18:00"
     case evening = "Вечер 18:00 - 00:00"
     case night = "Ночь 00:00 - 06:00"
-
+    
     static func determine(from date: Date?) -> Self {
         guard let date = date else { return .night }
         let hour = Calendar.current.component(.hour, from: date)
@@ -49,8 +49,8 @@ struct Segment: Identifiable {
     let thread: ThreadInfo?
     let ticketsInfo: TicketsInfo
     let duration: String?
-    let transfers: [Transfers]?
-    let hasTransfers: Bool?
+    let transfers: [Transfers]
+    let hasTransfers: Bool
     let timeInterval: TimeIntervals
 }
 
@@ -165,22 +165,20 @@ extension Pagination {
 
 extension Segment {
     static func from(apiSegment: Components.Schemas.Segment) -> Segment? {
-        guard let fromStation = apiSegment.from,
-              let toStation = apiSegment.to else {
-            return nil
-        }
+        let fromStation = SearchStation.from(apiStation: apiSegment.from ?? .init())
+        let toStation = SearchStation.from(apiStation: apiSegment.to ?? .init())
         
         return Segment(
-            from: SearchStation.from(apiStation: fromStation),
-            to: SearchStation.from(apiStation: toStation),
+            from: fromStation,
+            to: toStation,
             departure: time(from: apiSegment.departure),
             arrival: time(from: apiSegment.arrival),
-            startDate: dateString(from: apiSegment.departure), // Добавляем новое поле
-            thread: ThreadInfo.from(apiThread: apiSegment.thread),
+            startDate: dateString(from: apiSegment.departure),
+            thread: apiSegment.thread == nil ? ThreadInfo.from(apiThread: apiSegment.details?.first?.thread) : ThreadInfo.from(apiThread: apiSegment.thread),
             ticketsInfo: TicketsInfo.from(apiTicketsInfo: apiSegment.tickets_info),
             duration: formatDuration(apiSegment.duration),
-            transfers: apiSegment.transfers?.map { Transfers.from(apiTransfer: $0) },
-            hasTransfers: apiSegment.has_transfers,
+            transfers: apiSegment.transfers?.map { Transfers.from(apiTransfer: $0) } ?? [],
+            hasTransfers: apiSegment.has_transfers ?? false,
             timeInterval: TimeIntervals.determine(from: apiSegment.departure)
         )
     }
@@ -204,33 +202,33 @@ extension Segment {
     }
     
     private static func formatDuration(_ duration: Int?) -> String? {
-            guard let duration = duration else { return nil }
-            let totalSeconds = Double(duration)
-            let hours = totalSeconds / 3600
-            let roundedHours = Int(hours.rounded())
-            
-            let pluralized = pluralizeHours(roundedHours)
-            return "\(roundedHours) \(pluralized)"
+        guard let duration = duration else { return nil }
+        let totalSeconds = Double(duration)
+        let hours = totalSeconds / 3600
+        let roundedHours = Int(hours.rounded())
+        
+        let pluralized = pluralizeHours(roundedHours)
+        return "\(roundedHours) \(pluralized)"
+    }
+    
+    private static func pluralizeHours(_ hours: Int) -> String {
+        let absoluteHours = abs(hours)
+        let remainder100 = absoluteHours % 100
+        let remainder10 = remainder100 % 10
+        
+        if (remainder100 >= 11 && remainder100 <= 14) {
+            return "часов"
         }
         
-        private static func pluralizeHours(_ hours: Int) -> String {
-            let absoluteHours = abs(hours)
-            let remainder100 = absoluteHours % 100
-            let remainder10 = remainder100 % 10
-            
-            if (remainder100 >= 11 && remainder100 <= 14) {
-                return "часов"
-            }
-            
-            switch remainder10 {
-            case 1:
-                return "час"
-            case 2, 3, 4:
-                return "часа"
-            default:
-                return "часов"
-            }
+        switch remainder10 {
+        case 1:
+            return "час"
+        case 2, 3, 4:
+            return "часа"
+        default:
+            return "часов"
         }
+    }
 }
 
 extension Transfers {
@@ -244,25 +242,23 @@ extension Transfers {
 
 extension SearchStation {
     static func from(apiStation: Components.Schemas.Station) -> SearchStation {
-        let codes = Codes(
-            yandexCode: apiStation.codes?.yandex_code,
-            esrCode: apiStation.codes?.esr_code
-        )
-        
-        return SearchStation(
-            type: apiStation._type ?? "",
-            title: apiStation.title ?? "",
+        SearchStation(
+            type: apiStation._type ?? "unknown",
+            title: apiStation.title ?? "Unknown Station",
             shortTitle: apiStation.short_title,
             popularTitle: apiStation.popular_title,
             code: apiStation.code,
             lat: apiStation.lat ?? 0.0,
             lng: apiStation.lng ?? 0.0,
-            stationType: apiStation.station_type ?? "",
-            transportType: apiStation.transport_type ?? "",
+            stationType: apiStation.station_type ?? "unknown",
+            transportType: apiStation.transport_type ?? "unknown",
             distance: apiStation.distance,
             majority: apiStation.majority,
             direction: apiStation.direction,
-            codes: codes
+            codes: Codes(
+                yandexCode: apiStation.codes?.yandex_code,
+                esrCode: apiStation.codes?.esr_code
+            )
         )
     }
 }
@@ -270,7 +266,17 @@ extension SearchStation {
 extension ThreadInfo {
     static func from(apiThread: Components.Schemas.Thread?) -> ThreadInfo? {
         guard let apiThread = apiThread else {
-            return nil
+            return ThreadInfo(
+                uid: "unknown",
+                title: "Unknown Thread",
+                number: "N/A",
+                carrier: nil,
+                transportType: "unknown",
+                vehicle: nil,
+                startTime: "00:00",
+                days: nil,
+                interval: nil
+            )
         }
         return ThreadInfo(
             uid: apiThread.uid ?? "",

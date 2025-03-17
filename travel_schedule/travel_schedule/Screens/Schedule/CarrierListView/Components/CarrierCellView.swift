@@ -37,20 +37,23 @@ struct CarrierCellView: View {
             case .success(let image):
                 image
                     .resizable()
-                    .aspectRatio(1, contentMode: .fit)
+                    .scaledToFit()
             default:
                 ProgressView()
             }
         }
         .frame(width: 38, height: 38)
+        .clipped()
+        .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        
     }
     
     private var carrierNameAndTransfersInfo: some View {
         VStack(alignment: .leading) {
             Text(segment.thread?.carrier?.title ?? "информации нет")
                 .font(.system(size: 17, weight: .regular))
-            Text("C пересадкой в: \(segment.transfers?.first?.title ?? "")")
+            Text("C пересадкой в: \(segment.transfers.first?.title ?? "")")
                 .font(.system(size: 12, weight: .regular))
                 .foregroundStyle(Color.ypRed)
                 .lineLimit(2)
