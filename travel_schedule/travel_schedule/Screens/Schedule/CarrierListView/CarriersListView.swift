@@ -30,7 +30,7 @@ struct CarriersListView: View {
             VStack(spacing: 16) {
                 headerView
                 
-                if viewModel.filteredSegments.isEmpty {
+                if viewModel.filteredSegments.isEmpty, !viewModel.hasFilters {
                     Spacer()
                     ProgressView()
                 } else if !viewModel.filteredSegments.isEmpty {
@@ -39,15 +39,31 @@ struct CarriersListView: View {
                         depatureIntervalButton
                     }
                 } else {
-                    Spacer()
-                    Text("Вариантов нет")
+                    noSegmentsView
                 }
                 Spacer()
+                    .background(Color.clear)
                     .toolbarRole(.editor)
+                
             }
             .foregroundStyle(.ypBlack)
             .padding(16)
         }
+        .customNavigationModifier(router: router, viewModel: viewModel, title: "")
+    }
+    
+    private var noSegmentsView: some View {
+        ZStack {
+            Text("Вариантов нет")
+                .font(.system(size: 24,weight: .bold))
+                .padding(.bottom, 16)
+            
+            VStack {
+                Spacer()
+                depatureIntervalButton
+            }
+        }
+        .frame(maxHeight: .infinity)
     }
     
     private var headerView: some View {
@@ -63,17 +79,15 @@ struct CarriersListView: View {
         ScrollView {
             LazyVStack(spacing: 8) {
                 ForEach(viewModel.filteredSegments) { segment in
-                    CarrierCardView(
-                        segment: segment,
-                        startDate: "segment.departure",
-                        departureTime: "segment.departure",
-                        arrivalTime: "segment.arrival"
+                    CarrierCellView(
+                        segment: segment
                     )
                     .frame(height: 104)
                     .onTapGesture {
-                        router.backToRoot()
-                    }
+                        viewModel.selectedCarrier = segment.thread?.carrier
+                        router.push(.carrierCardView)                    }
                 }
+                Color.clear.frame(height: 68)
             }
         }
         .scrollIndicators(.hidden)
@@ -83,13 +97,13 @@ struct CarriersListView: View {
         VStack {
             Spacer()
             Button {
-                router.backToRoot()
+                router.push(.filterView)
             } label: {
                 buttonView
+                    .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
+                    .background(.ypBlue)
+                    .clipShape(.rect(cornerRadius: 16))
             }
-            .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
-            .background(.ypBlue)
-            .clipShape(.rect(cornerRadius: 16))
             .padding(.bottom, 8)
         }
     }
@@ -105,6 +119,7 @@ struct CarriersListView: View {
                     .foregroundStyle(viewModel.hasFilters ? .ypRed : .ypBlue)
             }
         } icon: {}
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

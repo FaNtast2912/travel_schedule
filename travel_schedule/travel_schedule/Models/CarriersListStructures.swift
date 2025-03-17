@@ -19,18 +19,39 @@ struct Pagination {
     let offset: Int?
 }
 
+// MARK: - TimeIntervals
+enum TimeIntervals: String {
+    case morning = "Утро 06:00 - 12:00"
+    case afternoon = "День 12:00 - 18:00"
+    case evening = "Вечер 18:00 - 00:00"
+    case night = "Ночь 00:00 - 06:00"
+
+    static func determine(from date: Date?) -> Self {
+        guard let date = date else { return .night }
+        let hour = Calendar.current.component(.hour, from: date)
+        switch hour {
+        case 6..<12: return .morning
+        case 12..<18: return .afternoon
+        case 18..<24: return .evening
+        default: return .night // 0..<6
+        }
+    }
+}
+
 // MARK: - Segment
 struct Segment: Identifiable {
     let id = UUID()
     let from: SearchStation
     let to: SearchStation
-    let departure: Date?
-    let arrival: Date?
+    let departure: String?
+    let arrival: String?
+    let startDate: String?
     let thread: ThreadInfo?
     let ticketsInfo: TicketsInfo
-    let duration: Int?
+    let duration: String?
     let transfers: [Transfers]?
     let hasTransfers: Bool?
+    let timeInterval: TimeIntervals
 }
 
 // MARK: - Transfers
@@ -144,22 +165,72 @@ extension Pagination {
 
 extension Segment {
     static func from(apiSegment: Components.Schemas.Segment) -> Segment? {
-        let formatter = ISO8601DateFormatter()
-        guard let fromStation = apiSegment.from, let toStation = apiSegment.to else {
+        guard let fromStation = apiSegment.from,
+              let toStation = apiSegment.to else {
             return nil
         }
+        
         return Segment(
             from: SearchStation.from(apiStation: fromStation),
             to: SearchStation.from(apiStation: toStation),
-            departure: apiSegment.departure,
-            arrival: apiSegment.arrival,
+            departure: time(from: apiSegment.departure),
+            arrival: time(from: apiSegment.arrival),
+            startDate: dateString(from: apiSegment.departure), // Добавляем новое поле
             thread: ThreadInfo.from(apiThread: apiSegment.thread),
             ticketsInfo: TicketsInfo.from(apiTicketsInfo: apiSegment.tickets_info),
-            duration: apiSegment.duration,
+            duration: formatDuration(apiSegment.duration),
             transfers: apiSegment.transfers?.map { Transfers.from(apiTransfer: $0) },
-            hasTransfers: apiSegment.has_transfers
+            hasTransfers: apiSegment.has_transfers,
+            timeInterval: TimeIntervals.determine(from: apiSegment.departure)
         )
     }
+    
+    private static func dateString(from date: Date?) -> String {
+        guard let date = date else { return "" }
+        
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "d MMMM"
+        
+        return formatter.string(from: date)
+    }
+    
+    private static func time(from apiTime: Date?) -> String? {
+        guard let apiTime else { return nil }
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: apiTime)
+        let minute = calendar.component(.minute, from: apiTime)
+        return String(format: "%02d:%02d", hour, minute)
+    }
+    
+    private static func formatDuration(_ duration: Int?) -> String? {
+            guard let duration = duration else { return nil }
+            let totalSeconds = Double(duration)
+            let hours = totalSeconds / 3600
+            let roundedHours = Int(hours.rounded())
+            
+            let pluralized = pluralizeHours(roundedHours)
+            return "\(roundedHours) \(pluralized)"
+        }
+        
+        private static func pluralizeHours(_ hours: Int) -> String {
+            let absoluteHours = abs(hours)
+            let remainder100 = absoluteHours % 100
+            let remainder10 = remainder100 % 10
+            
+            if (remainder100 >= 11 && remainder100 <= 14) {
+                return "часов"
+            }
+            
+            switch remainder10 {
+            case 1:
+                return "час"
+            case 2, 3, 4:
+                return "часа"
+            default:
+                return "часов"
+            }
+        }
 }
 
 extension Transfers {
@@ -205,7 +276,7 @@ extension ThreadInfo {
             uid: apiThread.uid ?? "",
             title: apiThread.title ?? "",
             number: apiThread.number ?? "",
-            carrier: Carrier.from(apiCarrier: apiThread.carrier),
+            carrier: CarrierInfo.from(apiCarrier: apiThread.carrier),
             transportType: apiThread.transport_type ?? "",
             vehicle: apiThread.vehicle,
             startTime: apiThread.start_time ?? "",
@@ -215,7 +286,7 @@ extension ThreadInfo {
     }
 }
 
-extension Carrier {
+extension CarrierInfo {
     static func from(apiCarrier: Components.Schemas.Carrier?) -> CarrierInfo? {
         guard let apiCarrier = apiCarrier else {
             return nil
@@ -275,7 +346,6 @@ extension Price {
 extension Interval {
     static func from(apiInterval: Components.Schemas.Interval?) -> Interval? {
         guard let apiInterval = apiInterval else { return nil }
-        let formatter = ISO8601DateFormatter()
         
         return Interval(
             density: apiInterval.density ?? "",

@@ -1,0 +1,46 @@
+//
+//  CircleButton.swift
+//  travel_schedule
+//
+//  Created by Maksim Zakharov on 17.03.2025.
+//
+
+import SwiftUI
+
+struct CircleButton: View {
+    
+    @ObservedObject private var viewModel: ScheduleViewModel
+    let checkBox: Bool
+    
+    init(checkBox: Bool) {
+        guard let vm = DIContainer.shared.resolve(ScheduleViewModel.self) else {
+            fatalError("Dependencies not registered")
+        }
+        self.viewModel = vm
+        self.checkBox = checkBox
+    }
+    
+    var body: some View {
+        ZStack {
+            Color.ypWhite.ignoresSafeArea()
+            HStack {
+                Text(checkBox ? "Да" : "Нет")
+                Spacer()
+                Image(systemName: viewModel.hasTransferFilter == checkBox ? "largecircle.fill.circle" : "circle")
+                    .onTapGesture {
+                        viewModel.hasTransferFilter = checkBox
+                    }
+            }
+            .foregroundStyle(.ypBlack)
+        }
+        .frame(height: 60)
+    }
+}
+
+#Preview {
+    let coordinator = AppCoordinator()
+    coordinator.setupDependencies()
+
+    return CircleButton(checkBox: true)
+}
+

@@ -40,7 +40,6 @@ struct ScheduleView: View {
             }
             if viewModel.shouldSearchCarriers {
                 SearchButton {
-                    print("Кнопка была нажата!")
                     viewModel.fetchSegments()
                     router.push(.carriersListView)
                 }

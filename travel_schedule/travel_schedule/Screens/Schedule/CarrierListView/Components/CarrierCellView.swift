@@ -7,21 +7,14 @@
 
 import SwiftUI
 
-struct CarrierCardView: View {
+struct CarrierCellView: View {
     
     private let segment: Segment
-    private let startDate: String
-    private let departureTime: String
-    private let arrivalTime: String
-    private let travelTime: Double
     
-    init(segment: Segment, startDate: String, departureTime: String, arrivalTime: String) {
+    init(segment: Segment) {
         self.segment = segment
-        travelTime = Double((segment.duration ?? 0)/3600)
-        self.startDate = startDate
-        self.departureTime = departureTime
-        self.arrivalTime = arrivalTime
     }
+    
     var body: some View {
         ZStack {
             Color.ypLightGray
@@ -44,7 +37,7 @@ struct CarrierCardView: View {
             case .success(let image):
                 image
                     .resizable()
-                    .aspectRatio(1, contentMode: .fill)
+                    .aspectRatio(1, contentMode: .fit)
             default:
                 ProgressView()
             }
@@ -67,12 +60,12 @@ struct CarrierCardView: View {
     
     private var depatureInfo: some View {
         HStack {
-            Text(departureTime)
+            Text(segment.departure ?? "")
             separator
-            Text("\(travelTime, specifier: "%.0f") часов")
+            Text(segment.duration ?? "")
                 .font(.system(size: 12, weight: .regular))
             separator
-            Text(arrivalTime)
+            Text(segment.arrival ?? "")
         }
         .foregroundStyle(.ypBlackConstant)
     }
@@ -82,7 +75,7 @@ struct CarrierCardView: View {
             carrierLogo
             carrierNameAndTransfersInfo
             Spacer()
-            Text(startDate)
+            Text(segment.startDate ?? "")
                 .font(.system(size: 12, weight: .regular))
         }
         .foregroundStyle(Color.ypBlackConstant)
@@ -94,49 +87,4 @@ struct CarrierCardView: View {
             .foregroundStyle(.ypGray)
             .frame(height: 1)
     }
-}
-
-
-#Preview {
-    let from = SearchStation(
-        type: "station",
-        title: "Москва (Восточный вокзал)",
-        shortTitle: nil,
-        popularTitle: nil,
-        code: nil,
-        lat: 0,
-        lng: 0,
-        stationType: "train_station",
-        transportType: "train",
-        distance: nil,
-        majority: nil,
-        direction: nil,
-        codes: Codes(
-            yandexCode: nil,
-            esrCode: nil
-        )
-    )
-    let to = SearchStation(
-        type: "station",
-        title: "Санкт-Петербург (Московский вокзал)",
-        shortTitle: nil,
-        popularTitle: nil,
-        code: nil,
-        lat: 0,
-        lng: 0,
-        stationType: "train_station",
-        transportType: "train",
-        distance: nil,
-        majority: nil,
-        direction: nil,
-        codes: Codes(
-            yandexCode: nil,
-            esrCode: nil
-        ))
-    let ticketInfo = TicketsInfo(
-        etMarker: false,
-        places: [Place(name: "", price: Price(currency: "", whole: 0, cents: 0))]
-    )
-    let segment: Segment = .init(from: from, to: to, departure: Date(), arrival: Date(), thread: nil, ticketsInfo: ticketInfo, duration: 0, transfers: [], hasTransfers: true)
-    CarrierCardView(segment: segment, startDate: "", departureTime: "", arrivalTime: "")
 }

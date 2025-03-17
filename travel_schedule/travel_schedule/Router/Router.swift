@@ -18,6 +18,9 @@ final class Router: ObservableObject {
         case selectCityView
         case selectStationView
         case carriersListView
+        case filterView
+        case carrierCardView
+        case userAreementView
         case storiesView
         case showStory(story: StoryModel)
     }

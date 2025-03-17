@@ -17,6 +17,12 @@ final class ScreenFactory: ObservableObject {
             SelectStationView()
         case .carriersListView:
             CarriersListView()
+        case .filterView:
+            FilterView()
+        case .carrierCardView:
+            CarrierCardView()
+        case .userAreementView:
+            UserAreementView()
         case .storiesView:
             StoriesListView()
         case let .showStory(story):

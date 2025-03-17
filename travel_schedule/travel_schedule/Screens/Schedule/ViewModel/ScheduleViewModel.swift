@@ -16,6 +16,7 @@ final class ScheduleViewModel: ObservableObject {
     @Published var selectedEndCity: Settlement?
     @Published var selectedStartStation: Station?
     @Published var selectedEndStation: Station?
+    @Published var selectedCarrier: CarrierInfo?
     @Published var allSettlements: [Settlement]?
     @Published var allStations: [Station]?
     @Published var allSegments: [Segment?]? = []
@@ -26,6 +27,10 @@ final class ScheduleViewModel: ObservableObject {
     @Published private(set) var filteredSegments: [Segment] = []
     @Published var shouldSearchCarriers: Bool = false
     @Published var hasFilters: Bool = false
+    @Published var filters: [TimeIntervals] = []
+    @Published var hasTransferFilter: Bool = false
+    @Published var shouldSearchCity: Bool = false
+    @Published var shouldSearchStation: Bool = false
     
     // MARK: - Private Properties
     private var networkService: TravelServiceFacade
@@ -38,6 +43,7 @@ final class ScheduleViewModel: ObservableObject {
         }
         self.networkService = networkService
         setSearchTextBinding()
+        setFiltersBinding()
     }
     
     // MARK: - Public Methods
@@ -50,10 +56,12 @@ final class ScheduleViewModel: ObservableObject {
     func setSelectedCity(_ city: Settlement) {
         if isEditingFromField {
             selectedStartCity = city
+            filteredSettlements = allSettlements ?? []
             allStations = city.stations
             filteredStations = allStations?.filter { $0.stationType == "train_station" || $0.transportType == "train" } ?? []
         } else {
             selectedEndCity = city
+            filteredSettlements = allSettlements ?? []
             allStations = city.stations
             filteredStations = allStations?.filter { $0.stationType == "train_station" || $0.transportType == "train" } ?? []
         }
@@ -71,26 +79,28 @@ final class ScheduleViewModel: ObservableObject {
         }
     }
     
-    func resetViewModel() {
+    func resetCitySelection() {
         if isEditingFromField {
             selectedStartCity = nil
             selectedStartStation = nil
             from = ""
+            shouldNavigate()
         } else {
             selectedEndCity = nil
             selectedEndStation = nil
             to = ""
-        }
-        allStations = nil
-        filteredStations = []
-        if let settlements = allSettlements {
-            filteredSettlements = settlements
+            shouldNavigate()
         }
     }
     
     func resetStationSelection() {
-        allStations = nil
-        filteredStations = []
+        if isEditingFromField {
+            selectedStartStation = nil
+            shouldNavigate()
+        } else {
+            selectedEndStation = nil
+            shouldNavigate()
+        }
     }
     
     func fetchStationList() {
@@ -116,30 +126,39 @@ final class ScheduleViewModel: ObservableObject {
         }
     }
     
+    func applyFilters() {
+        filteredSegments = allSegments?.compactMap { $0 }.filter { segment in
+            let isTimeMatch = filters.isEmpty || filters.contains(segment.timeInterval)
+            let isTransferMatch = !hasTransferFilter || (segment.hasTransfers ?? false)
+            
+            return isTimeMatch && isTransferMatch
+        } ?? []
+    }
+    
     func fetchSegments() {
-            Task {
-                do {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    let date = dateFormatter.string(from: Date())
-                    
-                    guard let fromCode = selectedStartCity?.codes?.yandexCode,
-                          let toCode = selectedEndCity?.codes?.yandexCode else {
-                        return
-                    }
-                    
-                    let response = try await networkService.getScheduleBetweenStations(from: fromCode, to: toCode, transportTypes: "train", date: date)
-                    let filteredResponse = response.segments?.compactMap { $0 } ?? []
-                    await MainActor.run {
-                        allSegments = filteredResponse.compactMap { Segment.from(apiSegment: $0) }
-                        filteredSegments = filteredResponse.compactMap { Segment.from(apiSegment: $0) }
-                        print(allSegments)
-                    }
-                } catch {
-                    print("Ошибка загрузки сегментов: \(error.localizedDescription)")
+        Task {
+            do {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let date = dateFormatter.string(from: Date())
+                
+                guard let fromCode = selectedStartCity?.codes?.yandexCode,
+                      let toCode = selectedEndCity?.codes?.yandexCode else {
+                    return
                 }
+                
+                let response = try await networkService.getScheduleBetweenStations(from: fromCode, to: toCode, transportTypes: "train", date: date)
+                let filteredResponse = response.segments?.compactMap { $0 } ?? []
+                await MainActor.run {
+                    allSegments = filteredResponse.compactMap { Segment.from(apiSegment: $0) }
+                    filteredSegments = filteredResponse.compactMap { Segment.from(apiSegment: $0) }
+                    applyFilters()
+                }
+            } catch {
+                print("Ошибка загрузки сегментов: \(error.localizedDescription)")
             }
         }
+    }
 }
 
 
@@ -217,11 +236,21 @@ private extension ScheduleViewModel {
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] text in
-                if self?.selectedStartCity != nil || self?.selectedEndCity != nil {
-                    self?.filterStations(by: text)
-                } else {
-                    self?.filterCities(by: text)
+                guard let self else { return }
+                if shouldSearchStation {
+                    self.filterStations(by: text)
+                } else if shouldSearchCity {
+                    self.filterCities(by: text)
                 }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func setFiltersBinding() {
+        $filters
+            .combineLatest($hasTransferFilter)
+            .sink { [weak self] _ in
+                self?.applyFilters()
             }
             .store(in: &cancellables)
     }
@@ -280,6 +309,7 @@ private extension ScheduleViewModel {
     
     func shouldNavigate() {
         guard let selectedStartStation, let selectedEndStation else {
+            shouldSearchCarriers = false
             return
         }
         shouldSearchCarriers = true

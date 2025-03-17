@@ -1,5 +1,5 @@
 //
-//  FirstView.swift
+//  SecondView.swift
 //  Navigation SwiftUI
 //
 //  Created by Maksim Zakharov on 16.02.2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectCityView: View {
+struct SelectStationView: View {
     // MARK: - States
     @ObservedObject private var viewModel: ScheduleViewModel
     @ObservedObject private var router: Router
@@ -30,8 +30,12 @@ struct SelectCityView: View {
     var body: some View {
         VStack(spacing: 0) {
             SearchBarView
+                .onAppear {
+                    viewModel.shouldSearchCity = false
+                    viewModel.shouldSearchStation = true
+                }
             ZStack {
-                if viewModel.allSettlements == nil {
+                if viewModel.allStations == nil {
                     ProgressView()
                         .padding()
                 } else if viewModel.filteredSettlements.isEmpty {
@@ -42,7 +46,7 @@ struct SelectCityView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .customNavigationModifier(router: router, viewModel: viewModel, title: "Выбор Города")
+        .customNavigationModifier(router: router, viewModel: viewModel, title: "Выбор станции")
     }
     
     private var SearchBarView: some View {
@@ -54,7 +58,7 @@ struct SelectCityView: View {
     }
     
     private var searchResultsStub: some View {
-        Text("Город не найден")
+        Text("Станция не найдена")
             .font(.system(size: 24, weight: .bold))
             .foregroundColor(.gray)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -63,13 +67,12 @@ struct SelectCityView: View {
     private var lazyListView: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: 0) {
-                ForEach(viewModel.filteredSettlements) { city in
+                ForEach(viewModel.filteredStations) { station in
                     Button(action: {
-                        viewModel.setSelectedCity(city)
-                        router.push(.selectStationView)
-                        searchText = ""
+                        viewModel.setSelectedStation(station)
+                        router.backToRoot()
                     }) {
-                        let name = city.title ?? ""
+                        let name = station.title
                         ScheduleCellView(cityName: name)
                     }
                     .buttonStyle(PlainButtonStyle())
@@ -80,10 +83,9 @@ struct SelectCityView: View {
     }
 }
 
-// MARK: - Previews
 #Preview {
     let coordinator = AppCoordinator()
     coordinator.setupDependencies()
 
-    return SelectCityView()
+    return SelectStationView()
 }

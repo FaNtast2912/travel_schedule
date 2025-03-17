@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 // Nav bar setup
 extension View {
     func setupNavBarTitle() {
@@ -23,8 +24,8 @@ extension View {
 // MARK: - List Modify
 
 struct CustomNavigationModifier: ViewModifier {
-    let router: Router
-    let viewModel: ScheduleViewModel
+    let router: Router?
+    let viewModel: ScheduleViewModel?
     let title: String
     
     func body(content: Content) -> some View {
@@ -33,9 +34,14 @@ struct CustomNavigationModifier: ViewModifier {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItemGroup(placement: .navigationBarLeading) {
                     Button(action: {
-                        router.pop()
+                        if let viewModel, viewModel.shouldSearchCity {
+                            viewModel.resetCitySelection()
+                        } else if let viewModel, viewModel.shouldSearchStation {
+                            viewModel.resetStationSelection()
+                        }
+                        router?.pop()
                     }) {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)
@@ -43,7 +49,7 @@ struct CustomNavigationModifier: ViewModifier {
                 }
             }
             .onAppear {
-                if viewModel.allSettlements == nil {
+                if let viewModel, viewModel.allSettlements == nil {
                     viewModel.fetchStationList()
                 }
             }
@@ -51,7 +57,7 @@ struct CustomNavigationModifier: ViewModifier {
 }
 
 extension View {
-    func customNavigationModifier(router: Router, viewModel: ScheduleViewModel, title: String) -> some View {
+    func customNavigationModifier(router: Router? = nil, viewModel: ScheduleViewModel? = nil, title: String) -> some View {
         self.modifier(CustomNavigationModifier(router: router, viewModel: viewModel, title: title))
     }
 }
