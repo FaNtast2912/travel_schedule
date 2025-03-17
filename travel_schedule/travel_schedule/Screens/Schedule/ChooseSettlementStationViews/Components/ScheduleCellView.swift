@@ -25,7 +25,7 @@ struct ScheduleCellView: View {
             .frame(width: 24, height: 24)
         }
         .frame(maxWidth: .infinity, minHeight: rowHeight)
-        .background(Color.white)
+        .background(Color.ypWhite)
     }
 
 }

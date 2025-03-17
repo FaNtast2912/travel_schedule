@@ -9,10 +9,13 @@ import SwiftUI
 
 struct MainScreen: View {
     var body: some View {
-        VStack(spacing: 20.0) {
-            StoriesListView()
-            ScheduleView()
-            Spacer()
+        ZStack {
+            Color.ypWhite.ignoresSafeArea()
+            VStack(spacing: 20.0) {
+                StoriesListView()
+                ScheduleView()
+                Spacer()
+            }
         }
     }
 }

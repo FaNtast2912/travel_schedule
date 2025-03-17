@@ -44,7 +44,7 @@ struct CustomNavigationModifier: ViewModifier {
                         router?.pop()
                     }) {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
+                            .foregroundColor(.ypBlack)
                     }
                 }
             }

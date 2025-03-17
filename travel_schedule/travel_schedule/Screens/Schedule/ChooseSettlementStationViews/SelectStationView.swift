@@ -28,25 +28,28 @@ struct SelectStationView: View {
     
     // MARK: - Body
     var body: some View {
-        VStack(spacing: 0) {
-            SearchBarView
-                .onAppear {
-                    viewModel.shouldSearchCity = false
-                    viewModel.shouldSearchStation = true
+        ZStack {
+            Color.ypWhite.ignoresSafeArea()
+            VStack(spacing: 0) {
+                SearchBarView
+                    .onAppear {
+                        viewModel.shouldSearchCity = false
+                        viewModel.shouldSearchStation = true
+                    }
+                ZStack {
+                    if viewModel.allStations == nil {
+                        ProgressView()
+                            .padding()
+                    } else if viewModel.filteredSettlements.isEmpty {
+                        searchResultsStub
+                    } else {
+                        lazyListView
+                    }
                 }
-            ZStack {
-                if viewModel.allStations == nil {
-                    ProgressView()
-                        .padding()
-                } else if viewModel.filteredSettlements.isEmpty {
-                    searchResultsStub
-                } else {
-                    lazyListView
-                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .customNavigationModifier(router: router, viewModel: viewModel, title: "Выбор станции")
         }
-        .customNavigationModifier(router: router, viewModel: viewModel, title: "Выбор станции")
     }
     
     private var SearchBarView: some View {

@@ -37,6 +37,8 @@ struct ScheduleView: View {
                         ChangeButtonView
                     }
                 }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 32)
             }
             if viewModel.shouldSearchCarriers {
                 SearchButton {
@@ -57,7 +59,7 @@ private extension ScheduleView {
     }
     
     private var Textfields: some View {
-        VStack(spacing: 28.0) {
+        VStack(alignment: .leading) {
             getSelectDestinationView(text: viewModel.from, placeholder: "Откуда")
                 .onTapGesture {
                     viewModel.isEditingFromField = true
@@ -70,15 +72,18 @@ private extension ScheduleView {
                     router.push(.selectCityView)
                 }
         }
-        .frame(width: 259, height: 96)
-        .background(Color.ypWhiteConstant)
-        .cornerRadius(20)
+        .frame(height: 96)
+        .font(.system(size: 17, weight: .regular))
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(.ypWhiteConstant)
+        )
     }
     
     private var ChangeButtonView: some View {
         ZStack() {
             Circle()
-                .foregroundColor(Color(.ypWhite))
+                .foregroundColor(Color(.ypWhiteConstant))
             Image("change")
                 .resizable()
                 .foregroundColor(.ypBlue)
@@ -91,11 +96,11 @@ private extension ScheduleView {
     func getSelectDestinationView(text: String, placeholder: String) -> some View {
         ZStack(alignment: .leading) {
             Color.ypWhiteConstant
-            Text(text)
+            Text(text.isEmpty ? placeholder : text)
                 .padding(.vertical, 14)
                 .padding([.leading], 16)
                 .lineLimit(1)
-                .foregroundStyle(text != "" ? .ypBlackConstant : .ypGray)
+                .foregroundStyle(!text.isEmpty ? .ypBlackConstant : .ypGray)
         }
         .cornerRadius(20)
     }
