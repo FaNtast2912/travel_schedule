@@ -8,20 +8,25 @@ import SwiftUI
 import Combine
 
 final class StoryViewModel: ObservableObject {
+    
+    // MARK: - Private Properties
     private var cancellables = Set<AnyCancellable>()
-    
-    let stories: [StoryModel] = StoryModel.stories
-    
-    @Published var currentIndex: Int = 0
-    @Published var progress: CGFloat = 0
-    
     private let secondsPerStory: TimeInterval = 5
     private let timerTickInterval: TimeInterval = 0.1
-    
     private var progressPerTick: CGFloat {
         return 1.0 / (CGFloat(stories.count) * CGFloat(secondsPerStory) / CGFloat(timerTickInterval))
     }
     
+    // MARK: - Public Properties
+    let stories: [StoryModel] = StoryModel.stories
+    var currentStory: StoryModel {
+        stories[currentIndex]
+    }
+    @Published var currentIndex: Int = 0
+    @Published var progress: CGFloat = 0
+
+    
+    // MARK: - Public Methods
     func startTimer() {
         stopTimer()
         
@@ -31,27 +36,6 @@ final class StoryViewModel: ObservableObject {
                 self?.timerTick()
             }
             .store(in: &cancellables)
-    }
-    
-    private func timerTick() {
-        let newProgress = progress + progressPerTick
-        
-        let newIndex = Int(newProgress * CGFloat(stories.count))
-        
-        if newIndex >= stories.count {
-            progress = 0
-            currentIndex = 0
-            restartTimer()
-            return
-        }
-        
-        if newIndex > currentIndex {
-            currentIndex = newIndex
-        }
-
-        withAnimation(.linear(duration: timerTickInterval)) {
-            progress = newProgress
-        }
     }
     
     func setStory(at index: Int) {
@@ -79,11 +63,7 @@ final class StoryViewModel: ObservableObject {
         updateProgress()
     }
     
-    private func updateProgress() {
-        withAnimation(.linear(duration: 0.3)) {
-            progress = CGFloat(currentIndex) / CGFloat(stories.count)
-        }
-    }
+
     
     func restartTimer() {
         stopTimer()
@@ -95,8 +75,32 @@ final class StoryViewModel: ObservableObject {
         cancellables.removeAll()
     }
     
-    var currentStory: StoryModel {
-        stories[currentIndex]
+    private func updateProgress() {
+        withAnimation(.linear(duration: 0.3)) {
+            progress = CGFloat(currentIndex) / CGFloat(stories.count)
+        }
+    }
+    
+    // MARK: - Private Methods
+    private func timerTick() {
+        let newProgress = progress + progressPerTick
+        
+        let newIndex = Int(newProgress * CGFloat(stories.count))
+        
+        if newIndex >= stories.count {
+            progress = 0
+            currentIndex = 0
+            restartTimer()
+            return
+        }
+        
+        if newIndex > currentIndex {
+            currentIndex = newIndex
+        }
+
+        withAnimation(.linear(duration: timerTickInterval)) {
+            progress = newProgress
+        }
     }
 }
 

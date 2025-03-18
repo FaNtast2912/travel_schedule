@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct CarrierCellView: View {
-    
+    // MARK: - Private Properties
     private let segment: Segment
     
+    // MARK: - init
     init(segment: Segment) {
         self.segment = segment
     }

@@ -126,5 +126,8 @@ struct CarriersListView: View {
 }
 
 #Preview {
-    CarriersListView()
+    let coordinator = AppCoordinator.shared
+    coordinator.setupDependencies()
+    
+    return CarriersListView()
 }

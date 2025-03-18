@@ -8,8 +8,10 @@
 import Network
 import Combine
 
-class NetworkMonitor: ObservableObject {
+final class NetworkMonitor: ObservableObject {
+    
     @Published var isConnected: Bool = true
+    
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
     

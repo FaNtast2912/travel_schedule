@@ -87,5 +87,8 @@ struct CarrierCardView: View {
 }
 
 #Preview {
-    CarrierCardView()
+    let coordinator = AppCoordinator.shared
+    coordinator.setupDependencies()
+    
+    return CarrierCardView()
 }

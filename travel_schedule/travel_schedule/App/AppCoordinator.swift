@@ -9,16 +9,19 @@ import SwiftUI
 
 @MainActor
 final class AppCoordinator {
-    
+    // MARK: - Public Properties
     static let shared = AppCoordinator()
     
-    let container = DIContainer.shared
-    let router = Router.shared
+    // MARK: - Private Properties
+    private let container = DIContainer.shared
+    private let router = Router.shared
     
+    // MARK: - init
     private init() {
         customizeTabBarAppearance()
     }
     
+    // MARK: - Public methods
     func setupDependencies() {
         let storyViewModel = StoryViewModel()
         container.register(storyViewModel, for: StoryViewModel.self)
@@ -26,7 +29,7 @@ final class AppCoordinator {
         let networkMonitor = NetworkMonitor()
             container.register(networkMonitor, for: NetworkMonitor.self)
         
-        let themeManager = ThemeManager()
+        let themeManager = ThemeManager.shared
                 container.register(themeManager, for: ThemeManager.self)
         
         let screenFactory = ScreenFactory()
@@ -44,40 +47,23 @@ final class AppCoordinator {
 
     func start() -> some View {
         setupDependencies()
-        guard let themeManager = container.resolve(ThemeManager.self) else {
-            fatalError("ThemeManager not registered")
-        }
-        
         return RouterView {
             TabBarView()
-                .environmentObject(themeManager)
         }
     }
     
+    func updateTabBarAppearance() {
+        customizeTabBarAppearance()
+    }
+    
+    // MARK: - Private methods
     private func customizeTabBarAppearance() {
         let appearance = UITabBarAppearance()
         
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(.ypWhite)
         
-        appearance.shadowColor = UIColor(.ypBlackConstant)
-        
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.ypGray)]
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(.ypBlack)]
-        appearance.stackedLayoutAppearance.normal.iconColor = UIColor(.ypGray)
-        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(.ypBlack)
-        
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-    }
-    
-    func updateTabBarAppearance(isDark: Bool) {
-        let appearance = UITabBarAppearance()
-        
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(.ypWhite)
-        
-        appearance.shadowColor = isDark ?  UIColor(.black) : UIColor(.ypBlackConstant)
+        appearance.shadowColor = UIColor(.tabBarBlack)
         
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.ypGray)]
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(.ypBlack)]

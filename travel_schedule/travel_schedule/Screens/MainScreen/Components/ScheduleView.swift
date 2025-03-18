@@ -92,7 +92,7 @@ private extension ScheduleView {
                 .foregroundColor(.ypBlue)
                 .frame(width: 24, height: 24)
         }
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     @ViewBuilder

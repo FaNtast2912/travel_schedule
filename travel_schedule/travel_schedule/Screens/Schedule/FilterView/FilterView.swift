@@ -89,5 +89,8 @@ struct FilterView: View {
 }
 
 #Preview {
-    FilterView()
+    let coordinator = AppCoordinator.shared
+    coordinator.setupDependencies()
+    
+    return FilterView()
 }

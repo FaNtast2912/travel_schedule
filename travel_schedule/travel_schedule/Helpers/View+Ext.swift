@@ -24,6 +24,7 @@ extension View {
 // MARK: - List Modify
 
 struct CustomNavigationModifier: ViewModifier {
+    
     let router: Router?
     let viewModel: ScheduleViewModel?
     let title: String

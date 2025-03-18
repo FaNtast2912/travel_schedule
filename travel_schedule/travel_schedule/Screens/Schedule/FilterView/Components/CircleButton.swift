@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct CircleButton: View {
-    
+    // MARK: - States
     @ObservedObject private var viewModel: ScheduleViewModel
+    
+    // MARK: - Public Properties
     let checkBox: Bool
     
+    // MARK: - init
     init(checkBox: Bool) {
         guard let vm = DIContainer.shared.resolve(ScheduleViewModel.self) else {
             fatalError("Dependencies not registered")

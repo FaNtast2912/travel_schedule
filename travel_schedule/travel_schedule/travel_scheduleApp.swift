@@ -10,13 +10,12 @@ import SwiftUI
 @main
 struct travel_scheduleApp: App {
     private let coordinator = AppCoordinator.shared
-    @StateObject private var themeManager = ThemeManager()
+    @StateObject private var themeManager = ThemeManager.shared
     
     var body: some Scene {
         WindowGroup {
             coordinator.start()
                 .preferredColorScheme(themeManager.isDarkTheme ? .dark : .light)
-                .environmentObject(themeManager)
         }
     }
 }

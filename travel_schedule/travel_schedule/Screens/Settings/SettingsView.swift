@@ -10,14 +10,15 @@ import SwiftUI
 struct SettingsView: View {
     // MARK: - States
     @ObservedObject private var router: Router
-    @EnvironmentObject private var themeManager: ThemeManager
+    @ObservedObject private var themeManager: ThemeManager
     
     // MARK: - init
     init() {
-        guard let r = DIContainer.shared.resolve(Router.self) else {
+        guard let r = DIContainer.shared.resolve(Router.self), let themeManager = DIContainer.shared.resolve(ThemeManager.self) else {
             fatalError("Dependencies not registered")
         }
         self.router = r
+        self.themeManager = themeManager
         setupNavBarTitle()
     }
     

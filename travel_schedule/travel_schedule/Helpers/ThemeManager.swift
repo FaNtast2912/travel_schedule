@@ -11,7 +11,12 @@ import SwiftUI
 @MainActor
 final class ThemeManager: ObservableObject {
     
+    static let shared = ThemeManager()
+    
     let coordinator = AppCoordinator.shared
+    
+    private init() {
+    }
     
     @AppStorage("isDarkTheme") var isDarkTheme: Bool = false {
         didSet {
@@ -22,7 +27,7 @@ final class ThemeManager: ObservableObject {
     private func updateAppearance() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            coordinator.updateTabBarAppearance(isDark: self.isDarkTheme)
+            coordinator.updateTabBarAppearance()
         }
     }
 }

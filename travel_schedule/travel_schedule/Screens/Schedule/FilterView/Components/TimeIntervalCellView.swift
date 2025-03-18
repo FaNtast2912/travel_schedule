@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct TimeIntervalCellView: View {
-    
+    // MARK: - States
     @ObservedObject private var viewModel: ScheduleViewModel
+    
+    // MARK: - Public Properties
     let timeInterval: TimeIntervals
     
+    // MARK: - init
     init(timeInterval: TimeIntervals) {
         guard let vm = DIContainer.shared.resolve(ScheduleViewModel.self) else {
             fatalError("Dependencies not registered")
