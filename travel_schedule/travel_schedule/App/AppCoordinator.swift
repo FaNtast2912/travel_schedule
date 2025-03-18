@@ -20,6 +20,9 @@ final class AppCoordinator {
     }
     
     func setupDependencies() {
+        let storyViewModel = StoryViewModel()
+        container.register(storyViewModel, for: StoryViewModel.self)
+        
         let networkMonitor = NetworkMonitor()
             container.register(networkMonitor, for: NetworkMonitor.self)
         

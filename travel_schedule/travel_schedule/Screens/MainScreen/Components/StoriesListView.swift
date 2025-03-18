@@ -7,23 +7,36 @@
 
 import SwiftUI
 
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(
+        configuration: Configuration
+    ) -> some View {
+        configuration.label
+            .scaleEffect(
+                configuration.isPressed ? 0.95 : 1
+            )
+            .animation(
+                .easeInOut(
+                    duration: 0.2
+                ),
+                value: configuration.isPressed
+            )
+    }
+}
+
 struct StoriesListView: View {
     // MARK: - States
     @ObservedObject private var router: Router
+    @ObservedObject private var viewModel: StoryViewModel
     
     // MARK: - init
     init() {
-        guard let r = DIContainer.shared.resolve(
-            Router.self
-        ) else {
-            fatalError(
-                "Dependencies not registered"
-            )
+        guard let r = DIContainer.shared.resolve(Router.self), let vm = DIContainer.shared.resolve(StoryViewModel.self) else {
+            fatalError("Dependencies not registered")
         }
+        self.viewModel = vm
         self.router = r
     }
-    
-    let stories = StoryModel.stories
     
     // Размеры для адаптации
     private let storySize = CGSize(
@@ -32,9 +45,7 @@ struct StoriesListView: View {
     )
     private let cornerRadius: CGFloat = 16
     
-    
     var body: some View {
-        
         VStack(
             alignment: .leading
         ) {
@@ -46,10 +57,12 @@ struct StoriesListView: View {
                     spacing: 12
                 ) {
                     ForEach(
-                        stories
-                    ) { story in
+                        Array(viewModel.stories.enumerated()),
+                        id: \.element.id
+                    ) { index, story in
                         storyButton(
-                            story: story
+                            story: story,
+                            index: index
                         )
                     }
                 }
@@ -66,12 +79,14 @@ struct StoriesListView: View {
     }
     
     private func storyButton(
-        story: StoryModel
+        story: StoryModel,
+        index: Int
     ) -> some View {
         Button(
             action: {
                 handleStoryTap(
-                    story: story
+                    story: story,
+                    index: index
                 )
             }) {
                 StoryCardView(
@@ -84,31 +99,13 @@ struct StoriesListView: View {
     }
     
     private func handleStoryTap(
-        story: StoryModel
+        story: StoryModel,
+        index: Int
     ) {
-        router
-            .push(
-                .showStory(
-                    story: story
-                )
-            )
-    }
-}
+        viewModel.setStory(at: index)
+        
 
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(
-        configuration: Configuration
-    ) -> some View {
-        configuration.label
-            .scaleEffect(
-                configuration.isPressed ? 0.95 : 1
-            )
-            .animation(
-                .easeInOut(
-                    duration: 0.2
-                ),
-                value: configuration.isPressed
-            )
+        router.push(.showStory(story: story))
     }
 }
 
