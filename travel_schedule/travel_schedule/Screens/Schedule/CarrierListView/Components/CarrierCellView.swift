@@ -57,7 +57,7 @@ struct CarrierCellView: View {
                 .font(.system(size: 12, weight: .regular))
                 .foregroundStyle(Color.ypRed)
                 .lineLimit(2)
-                .opacity( segment.hasTransfers ?? false ? 1 : 0)
+                .opacity( segment.hasTransfers ? 1 : 0)
         }
     }
     

@@ -36,6 +36,8 @@ struct ScheduleView: View {
                     {
                         ChangeButtonView
                     }
+                    .contentShape(Circle())
+                    .frame(width: 36, height: 36)
                 }
                 .padding(.vertical, 16)
                 .padding(.horizontal, 32)
@@ -55,7 +57,8 @@ private extension ScheduleView {
     private var Background: some View {
         RoundedRectangle(cornerRadius: 20)
             .foregroundColor(Color(.ypBlue))
-            .frame(width: 343, height: 128)
+            .frame(height: 128)
+            .padding(.horizontal, 16)
     }
     
     private var Textfields: some View {
@@ -89,7 +92,7 @@ private extension ScheduleView {
                 .foregroundColor(.ypBlue)
                 .frame(width: 24, height: 24)
         }
-        .frame(width: 36, height: 36)
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     @ViewBuilder

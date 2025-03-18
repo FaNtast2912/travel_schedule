@@ -22,7 +22,7 @@ struct StoryCardView: View {
     }
     
     private func storyImage() -> some View {
-        Image(story.imageName)
+        story.image
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: storySize.width, height: storySize.height)
@@ -42,7 +42,7 @@ struct StoryCardView: View {
     
     private func storyTitle() -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(story.title)
+            Text(story.description)
                 .font(.system(size: 12))
                 .foregroundColor(.white)
                 .lineLimit(3)
@@ -60,5 +60,5 @@ struct StoryCardView: View {
 }
 
 #Preview {
-    StoryCardView(story: StoryModel(imageName: "1", title: "Машинист"))
+    StoryCardView(story: StoryModel.story1)
 }
