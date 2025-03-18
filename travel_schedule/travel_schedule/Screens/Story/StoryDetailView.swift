@@ -81,5 +81,5 @@ struct StoryDetailView: View {
 }
 
 #Preview {
-    StoryDetailView(story: .story16)
+    StoryDetailView(story: .story1)
 }

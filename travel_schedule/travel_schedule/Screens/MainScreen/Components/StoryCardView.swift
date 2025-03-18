@@ -7,8 +7,16 @@
 
 import SwiftUI
 
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
+}
+
 struct StoryCardView: View {
     let story: StoryModel
+    let isActive: Bool
     private let storySize = CGSize(width: 92, height: 140)
     private let cornerRadius: CGFloat = 16
     
@@ -19,6 +27,8 @@ struct StoryCardView: View {
         }
         .frame(width: storySize.width, height: storySize.height)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .opacity(isActive ? 1.0 : 0.5)
+        .animation(.easeInOut(duration: 0.4), value: isActive)
     }
     
     private func storyImage() -> some View {
@@ -30,13 +40,19 @@ struct StoryCardView: View {
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(
+                        isActive ?
                         LinearGradient(
                             colors: [.blue, .purple],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ) : LinearGradient(
+                            colors: [.clear, .clear],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
                         lineWidth: 4
                     )
+                    .animation(.easeInOut(duration: 0.4), value: isActive)
             )
     }
     
@@ -59,6 +75,7 @@ struct StoryCardView: View {
     }
 }
 
+
 #Preview {
-    StoryCardView(story: StoryModel.story1)
+    StoryCardView(story: StoryModel.story1, isActive: true)
 }

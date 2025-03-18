@@ -124,7 +124,7 @@ final class ScheduleViewModel: ObservableObject {
     func applyFilters() {
         filteredSegments = allSegments?.compactMap { $0 }.filter { segment in
             let isTimeMatch = filters.isEmpty || filters.contains(segment.timeInterval)
-            let isTransferMatch = !hasTransferFilter || (segment.hasTransfers ?? false)
+            let isTransferMatch = !hasTransferFilter || (segment.hasTransfers)
             
             return isTimeMatch && isTransferMatch
         } ?? []

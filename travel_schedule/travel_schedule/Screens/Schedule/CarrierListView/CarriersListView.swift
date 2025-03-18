@@ -27,27 +27,29 @@ struct CarriersListView: View {
     var body: some View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
-            VStack(spacing: 16) {
+            VStack(spacing: 16){
                 headerView
-                
-                if viewModel.filteredSegments.isEmpty, !viewModel.hasFilters {
-                    Spacer()
-                    ProgressView()
-                } else if !viewModel.filteredSegments.isEmpty {
-                    ZStack(alignment: .bottom) {
-                        lazyListView
-                        depatureIntervalButton
+                VStack(spacing: 16) {
+                    if viewModel.filteredSegments.isEmpty, !viewModel.hasFilters {
+                        Spacer()
+                        ProgressView()
+                    } else if !viewModel.filteredSegments.isEmpty {
+                        ZStack(alignment: .bottom) {
+                            lazyListView
+                            depatureIntervalButton
+                        }
+                    } else {
+                        noSegmentsView
                     }
-                } else {
-                    noSegmentsView
+                    Spacer()
+                        .background(Color.clear)
+                        .toolbarRole(.editor)
+                    
                 }
-                Spacer()
-                    .background(Color.clear)
-                    .toolbarRole(.editor)
-                
+                .foregroundStyle(.ypBlack)
             }
-            .foregroundStyle(.ypBlack)
-            .padding(16)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
         }
         .customNavigationModifier(router: router, viewModel: viewModel, title: "")
     }

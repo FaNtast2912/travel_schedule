@@ -41,7 +41,7 @@ final class StoryViewModel: ObservableObject {
         if newIndex >= stories.count {
             progress = 0
             currentIndex = 0
-            stopTimer()
+            restartTimer()
             return
         }
         
