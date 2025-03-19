@@ -19,11 +19,6 @@ struct Country {
     let region: Region
 }
 
-// MARK: - Codes structure
-struct Codes {
-    let yandexCode: String?
-}
-
 // MARK: - Region structure
 struct Region {
     let title: String?
@@ -32,14 +27,16 @@ struct Region {
 }
 
 // MARK: - Settlement structure
-struct Settlement {
+struct Settlement: Identifiable {
+    let id = UUID()
     let title: String?
     let codes: Codes?
     let stations: [Station]
 }
 
 // MARK: - Station structure
-struct Station {
+struct Station: Identifiable {
+    let id = UUID()
     let title: String
     let longitude: Double
     let latitude: Double
@@ -47,4 +44,40 @@ struct Station {
     let stationType: String
     let direction: String?
     let codes: Codes
+}
+
+// MARK: - Convert extension
+
+extension Settlement {
+    static func from(apiSettlement: Components.Schemas.Settlement) -> Settlement {
+        let codes: Codes? = apiSettlement.codes?.yandex_code != nil ?
+        Codes(yandexCode: apiSettlement.codes?.yandex_code, esrCode: "") : nil
+        
+        let stations = (apiSettlement.stations ?? []).map { apiStation in
+            Station.from(apiStation: apiStation)
+        }
+        
+        return Settlement(
+            title: apiSettlement.title,
+            codes: codes,
+            stations: stations
+        )
+    }
+}
+
+extension Station {
+    static func from(apiStation: Components.Schemas.Station) -> Station {
+        let codes: Codes? = apiStation.code != nil ?
+        Codes(yandexCode: apiStation.code, esrCode: "") : nil
+        
+        return Station(
+            title: apiStation.title ?? "",
+            longitude: apiStation.lng ?? 0,
+            latitude: apiStation.lat ?? 0,
+            transportType: apiStation.transport_type ?? "",
+            stationType: apiStation.station_type ?? "",
+            direction: apiStation.direction,
+            codes: codes ?? Codes(yandexCode: "", esrCode: "")
+        )
+    }
 }
