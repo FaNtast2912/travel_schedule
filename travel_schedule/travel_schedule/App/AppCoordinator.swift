@@ -13,6 +13,7 @@ final class AppCoordinator {
     static let shared = AppCoordinator()
     
     // MARK: - Private Properties
+    private var isDependenceSetup: Bool = false
     private let container = DIContainer.shared
     private let router = Router.shared
     
@@ -23,6 +24,7 @@ final class AppCoordinator {
     
     // MARK: - Public methods
     func setupDependencies() {
+        guard isDependenceSetup == false else { return }
         let storyViewModel = StoryViewModel()
         container.register(storyViewModel, for: StoryViewModel.self)
         
@@ -42,7 +44,7 @@ final class AppCoordinator {
         
         let scheduleViewModel = ScheduleViewModel()
         container.register(scheduleViewModel, for: ScheduleViewModel.self)
-        
+        isDependenceSetup = true
     }
 
     func start() -> some View {

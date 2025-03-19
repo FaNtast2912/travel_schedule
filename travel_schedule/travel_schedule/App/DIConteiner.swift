@@ -5,9 +5,7 @@
 //  Created by Maksim Zakharov on 08.03.2025.
 //
 
-import Foundation
 import SwiftUI
-
 
 final class DIContainer {
     static let shared = DIContainer()

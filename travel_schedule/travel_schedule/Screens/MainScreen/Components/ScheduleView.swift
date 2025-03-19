@@ -27,7 +27,7 @@ struct ScheduleView: View {
         VStack(spacing: 16.0) {
             ZStack() {
                 Background
-                HStack(spacing: 16.0) {
+                HStack(spacing: 16) {
                     Textfields
                     Button(action: {
                         viewModel.fetchStationList()

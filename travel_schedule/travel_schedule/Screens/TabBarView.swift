@@ -9,23 +9,24 @@ import SwiftUI
 
 struct TabBarView: View {
     
-    enum ButtonStyle: String {
-        case settingsButton = "settingsButton"
-        case scheduleButton = "scheduleButton"
+    enum TabItemType: String, CaseIterable {
+        case schedule = "scheduleButton"
+        case settings = "settingsButton"
     }
     
     var body: some View {
         TabView {
-            MainScreen()
-                .tabItem {
-                    Label("", image: ButtonStyle.scheduleButton.rawValue)
-                }
-            
-            SettingsView()
-                .tabItem {
-                    Label("", image: ButtonStyle.settingsButton.rawValue)
-                }
+            createTab(view: MainScreen(), type: .schedule)
+            createTab(view: SettingsView(), type: .settings)
         }
+    }
+    
+    @ViewBuilder
+    private func createTab<V: View>(view: V, type: TabItemType) -> some View {
+        view
+            .tabItem {
+                Image(type.rawValue)
+            }
     }
 }
 

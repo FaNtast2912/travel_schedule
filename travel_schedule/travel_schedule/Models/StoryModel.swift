@@ -25,7 +25,7 @@ struct StoryModel: Identifiable, Hashable {
         hasher.combine(description)
     }
     
-    static let stories: [StoryModel] = [story1, story2, story3, story4, story5, story6, story7, story8/*, story9, story10, story11, story12, story13, story14, story15, story16, story17, story18*/]
+    static let stories: [StoryModel] = [story1, story2, story3, story4, story5, story6, story7, story8]
 
     static let story1 = StoryModel(
         image: Image("1"),
@@ -74,64 +74,4 @@ struct StoryModel: Identifiable, Hashable {
         title: "🚴‍♂️ 🏃‍♀️ 🏋️‍♀️",
         description: "Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 Text8 "
     )
-
-//    static let story9 = StoryModel(
-//        image: Image("9"),
-//        title: "🌍 🌙 🌞",
-//        description: "Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 Text9 "
-//    )
-//
-//    static let story10 = StoryModel(
-//        image: Image("10"),
-//        title: "🎮 🎮 🎮",
-//        description: "Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 Text10 "
-//    )
-//
-//    static let story11 = StoryModel(
-//        image: Image("11"),
-//        title: "🐶 🐱 🐰",
-//        description: "Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 Text11 "
-//    )
-//
-//    static let story12 = StoryModel(
-//        image: Image("12"),
-//        title: "☕️ 🍰 🍦",
-//        description: "Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 Text12 "
-//    )
-//
-//    static let story13 = StoryModel(
-//        image: Image("13"),
-//        title: "🚗 🚁 ✈️",
-//        description: "Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 Text13 "
-//    )
-//
-//    static let story14 = StoryModel(
-//        image: Image("14"),
-//        title: "🏰 🏔️ 🏜️",
-//        description: "Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 Text14 "
-//    )
-//
-//    static let story15 = StoryModel(
-//        image: Image("15"),
-//        title: "🎸 🎤 🎹",
-//        description: "Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 Text15 "
-//    )
-//
-//    static let story16 = StoryModel(
-//        image: Image("16"),
-//        title: "⚽️ 🏀 🏈",
-//        description: "Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 Text16 "
-//    )
-//
-//    static let story17 = StoryModel(
-//        image: Image("17"),
-//        title: "🎨 📸 🎞️",
-//        description: "Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 Text17 "
-//    )
-//
-//    static let story18 = StoryModel(
-//        image: Image("18"),
-//        title: "🎭 🎪 🎡",
-//        description: "Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 Text18 "
-//    )
 }
