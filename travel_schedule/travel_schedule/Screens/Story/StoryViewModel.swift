@@ -22,7 +22,11 @@ final class StoryViewModel: ObservableObject {
     var currentStory: StoryModel {
         stories[currentIndex]
     }
-    @Published var currentIndex: Int = 0
+    
+    @Published var viewedStoryIds = Set<UUID>()
+    @Published var currentIndex: Int = 0 {
+        didSet { updateViewedStories() }
+    }
     @Published var progress: CGFloat = 0
 
     
@@ -101,6 +105,10 @@ final class StoryViewModel: ObservableObject {
         withAnimation(.linear(duration: timerTickInterval)) {
             progress = newProgress
         }
+    }
+    
+    private func updateViewedStories() {
+        viewedStoryIds.insert(stories[currentIndex].id)
     }
 }
 
